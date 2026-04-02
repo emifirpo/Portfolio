@@ -1212,30 +1212,31 @@
         margin-right: auto !important;
       }
 
-      /* 4. Showcase → carousel horizontal con scroll-snap */
-      #showcase { overflow: visible; }
-      .showcase-reel {
-        display: flex !important;
-        flex-direction: row;
-        overflow-x: scroll;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        gap: 14px;
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0;
-        padding-right: 32px;
-        padding-bottom: 8px;
-        align-items: stretch;
+      /* 4. Showcase → galería simple (no carousel) */
+      #showcase { overflow: visible; position: static; }
+      .gallery-scroll-anchor { position: static; height: auto !important; }
+      .gallery__wrapper {
+        position: static !important;
+        height: auto !important;
+        padding: 0 !important;
+        margin-bottom: 60px;
       }
-      .showcase-reel::-webkit-scrollbar { display: none; }
-      .vid-item {
-        flex: 0 0 80vw;
-        scroll-snap-align: start;
+      .gallery__image__container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 0 20px !important;
         transform: none !important;
       }
-      .vid-item.center { transform: none !important; }
+      .gallery__media-wrap {
+        width: 100%;
+      }
+      .gallery__media {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .gallery-hint { display: none !important; }
+      .gallery-progress { display: none !important; }
 
       /* Quitar chrome del reproductor (barra de navegador) */
       .vid-chrome { display: none; }
@@ -2501,9 +2502,10 @@
 
   <!-- SCROLL-DRIVEN HORIZONTAL GALLERY -->
   <script>
-  /* Pattern: sticky wrapper + tall anchor.
+  /* Pattern: sticky wrapper + tall anchor (desktop only).
      Scroll vertical dentro del anchor → translateX horizontal en el container.
-     Sin scroll hijacking — scroll nativo, cero preventDefault. */
+     Sin scroll hijacking — scroll nativo, cero preventDefault.
+     En mobile: galería simple sin carrousel. */
   (function() {
     var anchor    = document.getElementById('gallery-anchor');
     var wrapper   = document.getElementById('gallery-wrapper');
@@ -2511,6 +2513,9 @@
     var fill      = document.getElementById('gallery-progress-fill');
     var hint      = document.getElementById('gallery-hint');
     if (!anchor || !wrapper || !container) return;
+
+    // Solo activar en desktop (ancho > 768px)
+    if (window.innerWidth <= 768) return;
 
     var maxTx = 0;
 
