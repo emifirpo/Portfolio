@@ -2755,14 +2755,12 @@
         );
       }
 
-      /* Hero H1 + lead — dispara después de que el loader haya salido */
+      /* Hero H1 + lead — sin delay */
       window.addEventListener('load', () => {
-        setTimeout(() => {
-          const h1   = document.querySelector('.hero-h1.split-title');
-          const lead = document.querySelector('.hero-lead.split-title');
-          if (h1)   animateSplitTitle(h1,   0,    false);
-          if (lead) animateSplitTitle(lead, 0.55, true);
-        }, 580); /* 560ms loader + 20ms overlap suave */
+        const h1   = document.querySelector('.hero-h1.split-title');
+        const lead = document.querySelector('.hero-lead.split-title');
+        if (h1)   animateSplitTitle(h1,   0,    false);
+        if (lead) animateSplitTitle(lead, 0.55, true);
       });
 
       /* Section titles + labels — scroll-driven (scrub) */
