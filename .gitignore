@@ -1,0 +1,12 @@
+# Claude project instructions
+CLAUDE.md
+
+# Archivos fuente de video (usar solo .mp4)
+*.mov
+
+# Archivos de referencia / trabajo interno
+Brand guidelines/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
