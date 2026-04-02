@@ -1257,30 +1257,10 @@
     }
     .page-overlay-path { fill: #0368FE; }
 
-  /* ── PAGE LOADER ───────────────────────────────────────────── */
-  #page-loader {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #FFFFFF;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 1;
-    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-  }
-  #page-loader.is-out { opacity: 0; }
-  #loader-logo {
-    height: 56px; width: auto;
-    animation: loader-breathe 1.4s ease-in-out infinite;
-  }
-  @keyframes loader-breathe {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50%       { opacity: 1;   transform: scale(1.07); }
-  }
 </style>
 </head>
 <body>
-  <!-- PAGE LOADER -->
-  <div id="page-loader"><img id="loader-logo" src="e_logo_vector.svg" alt="" /></div>
-    <!-- PAGE TRANSITION OVERLAY -->
+  <!-- PAGE TRANSITION OVERLAY -->
   <svg class="page-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
     <path class="page-overlay-path" d="M 0 100 V 100 Q 50 100 100 100 V 100 z"/>
   </svg>
@@ -3049,38 +3029,5 @@
   })();
 
 </script>
-  <script>
-  /* ── PAGE LOADER ── */
-  (function() {
-    const loader = document.getElementById('page-loader');
-    if (!loader) return;
-
-    function hideLoader() {
-      loader.classList.add('is-out');
-      setTimeout(() => { loader.style.display = 'none'; }, 500);
-    }
-    if (document.readyState === 'complete') {
-      requestAnimationFrame(() => requestAnimationFrame(hideLoader));
-    } else {
-      window.addEventListener('load', () => {
-        requestAnimationFrame(() => requestAnimationFrame(hideLoader));
-      });
-    }
-
-    document.addEventListener('click', function(e) {
-      const link = e.target.closest('a[href]');
-      if (!link) return;
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('http') ||
-          href.startsWith('mailto') || href.startsWith('tel') ||
-          link.target === '_blank') return;
-      e.preventDefault();
-      loader.style.display = 'flex';
-      loader.offsetHeight;
-      loader.classList.remove('is-out');
-      setTimeout(() => { window.location.href = href; }, 420);
-    });
-  })();
-  </script>
 </body>
 </html>
