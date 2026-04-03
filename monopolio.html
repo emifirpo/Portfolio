@@ -3166,8 +3166,12 @@
         if (isActive) {
           var titleEl = p.querySelector('.vtl-name.split-title');
           if (titleEl && typeof Splitting !== 'undefined') {
-            Splitting({ target: titleEl });
-            animateSplitTitle(titleEl);
+            requestAnimationFrame(function() {
+              Splitting({ target: titleEl });
+              requestAnimationFrame(function() {
+                animateSplitTitle(titleEl);
+              });
+            });
           }
         }
       });
