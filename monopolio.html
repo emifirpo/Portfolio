@@ -3152,20 +3152,21 @@
     var cards  = document.querySelectorAll('#vtl .vtl-card');
     if (!cards.length) return;
 
-    // Entrance animation when timeline appears
-    if (typeof gsap !== 'undefined' && colLeft && colCenter && colRight) {
-      var vtlObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting && !entry.target.classList.contains('is-animated')) {
-            entry.target.classList.add('is-animated');
-            gsap.timeline()
-              .to(colLeft, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0)
-              .to(colCenter, { opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.15)
-              .to(colRight, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
-          }
-        });
-      }, { threshold: 0.1 });
-      vtlObserver.observe(vtlContainer);
+    // Entrance animation tied to scroll
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && colLeft && colCenter && colRight) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: vtlContainer,
+          start: 'top 70%',
+          end: 'top 20%',
+          scrub: 0.5,
+          once: true
+        }
+      })
+        .to(colLeft, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0)
+        .to(colCenter, { opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.15)
+        .to(colRight, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
     }
 
     // Split animation - entrance
