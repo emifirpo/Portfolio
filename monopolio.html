@@ -776,6 +776,8 @@
       display: flex; align-items: center; justify-content: flex-end;
       padding: 64px 40px 64px max(48px, 5vw);
       z-index: 2;
+      opacity: 0;
+      transform: translateX(-60px);
     }
 
     /* Each text panel sits absolutely centered, all initially hidden */
@@ -838,6 +840,8 @@
       height: 100vh;
       align-self: start;
       z-index: 3;
+      opacity: 0;
+      transform: scale(0.8);
     }
     .vtl-node-circle {
       width: 54px; height: 54px;
@@ -862,6 +866,8 @@
       position: relative;
       overflow: visible;
       z-index: 1;
+      opacity: 0;
+      transform: translateX(60px);
     }
 
     /* Each card scrolls vertically, full viewport height */
@@ -3137,10 +3143,30 @@
      - RIGHT: cards scrollean verticalmente, cada una = 100vh
   ───────────────────────────────────────────── */
   (function initVtl() {
+    var vtlContainer = document.getElementById('vtl');
+    var colLeft = document.querySelector('#vtl .vtl-col-left');
+    var colCenter = document.querySelector('#vtl .vtl-col-center');
+    var colRight = document.querySelector('#vtl .vtl-col-right');
     var panels = document.querySelectorAll('#vtl .vtl-panel');
     var glyphs = document.querySelectorAll('#vtl .vtl-node-glyph');
     var cards  = document.querySelectorAll('#vtl .vtl-card');
     if (!cards.length) return;
+
+    // Entrance animation when timeline appears
+    if (typeof gsap !== 'undefined' && colLeft && colCenter && colRight) {
+      var vtlObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !entry.target.classList.contains('is-animated')) {
+            entry.target.classList.add('is-animated');
+            gsap.timeline()
+              .to(colLeft, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0)
+              .to(colCenter, { opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.15)
+              .to(colRight, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
+          }
+        });
+      }, { threshold: 0.1 });
+      vtlObserver.observe(vtlContainer);
+    }
 
     // Split animation - entrance
     function animateSplitTitleIn(el) {
