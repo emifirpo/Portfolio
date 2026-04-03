@@ -741,181 +741,193 @@
 
     /* ─── STACK UNIFICADO ─── */
 
-    /* ── ECO PRODUCT TIMELINE ── */
-    .eco-tl-wrap {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      /* break out of .sec horizontal padding to use full width */
+    /* ══ VERTICAL TIMELINE — GSAP pin + right stacking ══
+       Pattern: texto fixed izquierda, imagen apila derecha
+    ══════════════════════════════════════════════════════ */
+
+    /* Pinned container — breaks out of section padding, full-bleed */
+    .vtl {
       margin-left:  calc(-1 * max(40px, calc((100% - var(--mw)) / 2)));
       margin-right: calc(-1 * max(40px, calc((100% - var(--mw)) / 2)));
+      height: 100vh;          /* viewport height (GSAP will pin & extend scroll) */
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      background: #FFFFFF;
+      position: relative;
       overflow: hidden;
     }
-    .eco-tl-inner {
-      width: 100%;
-      padding: 0 max(48px, calc((100% - var(--mw)) / 2));
-      display: flex;
-      gap: 72px;
-      align-items: stretch;
-      height: 72vh;
-    }
 
-    /* Left: list + vertical fill */
-    .eco-tl-left {
-      width: 260px;
-      flex-shrink: 0;
-      position: relative;
-      padding-left: 22px;
-      display: flex;
-      align-items: stretch;
-    }
-    .eco-tl-track {
-      position: absolute;
-      left: 0; top: 0;
-      width: 1.5px; height: 100%;
-      background: var(--border-hi);
-      border-radius: 1px;
-    }
-    .eco-tl-fill {
-      position: absolute;
-      left: 0; top: 0;
-      width: 1.5px; height: 100%;
-      background: var(--accent);
-      transform-origin: top center;
-      border-radius: 1px;
-    }
-    .eco-tl-list {
-      list-style: none;
-      padding: 0; margin: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 100%;
-    }
-    .eco-tl-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 8px 0;
-      cursor: default;
-    }
-    .eco-tl-num {
-      font-size: 10px; font-weight: 600;
-      font-family: 'DM Mono', monospace;
-      color: var(--muted); letter-spacing: .12em;
-      transition: color .4s ease;
-      flex-shrink: 0;
-      padding-top: 3px;
-    }
-    .eco-tl-lbl { display: flex; flex-direction: column; gap: 3px; }
-    .eco-tl-name {
-      font-size: 17px; font-weight: 300;
-      color: rgba(240,237,232,0.2);
-      letter-spacing: -.02em; line-height: 1.2;
-      transition: color .4s ease, font-weight .3s ease;
-    }
-    .eco-tl-sub {
-      font-size: 9px; font-weight: 600;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: transparent;
-      transition: color .4s ease;
-    }
-    .eco-tl-item.is-active .eco-tl-num  { color: var(--accent); }
-    .eco-tl-item.is-active .eco-tl-name { color: var(--ink); font-weight: 500; }
-    .eco-tl-item.is-active .eco-tl-sub  { color: #8DA85C; }
-
-    /* Right: stacked slides */
-    .eco-tl-right {
-      flex: 1;
-      position: relative;
-      min-height: 0;
-      min-width: 0;
-    }
-    .eco-tl-slide {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      gap: 20px;
-      opacity: 0; visibility: hidden;
-    }
-
-    /* Visual placeholder */
-    .eco-tl-visual {
-      flex: 1; min-height: 0;
-      border-radius: 14px;
-      background: var(--bg2);
-      border: 1px solid var(--border-hi);
-      display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
-    }
-    .eco-tl-visual::before {
+    /* Center spine line */
+    .vtl::before {
       content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(76,92,45,0.06) 0%, transparent 70%);
-    }
-    .eco-tl-visual-label {
-      font-size: 9px; font-weight: 600;
-      letter-spacing: .15em; text-transform: uppercase;
-      color: var(--muted);
-      display: flex; align-items: center; gap: 10px;
-      position: relative;
-    }
-    .eco-tl-visual-label::before,
-    .eco-tl-visual-label::after {
-      content: '';
-      display: block; width: 24px; height: 1px;
-      background: var(--border-hi);
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(10,10,10,0.09);
+      pointer-events: none;
     }
 
-    /* Info panel */
-    .eco-tl-info { flex-shrink: 0; }
-    .eco-tl-cycle {
+    /* ── LEFT COLUMN — fixed, text panels stack absolutely ── */
+    .vtl-col-left {
+      position: relative;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 64px 40px 64px max(48px, 5vw);
+      z-index: 2;
+    }
+
+    /* Each text panel sits absolutely centered, all initially hidden */
+    .vtl-panel {
+      position: absolute;
+      right: 40px;
+      left: max(48px, 5vw);
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: right;
+      opacity: 0;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      pointer-events: none;
+    }
+    .vtl-panel.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .vtl-num {
+      display: block;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: #4C5C2D; margin-bottom: 20px;
+    }
+    .vtl-name {
+      display: block;
+      font-size: clamp(40px, 5vw, 66px);
+      font-weight: 700; letter-spacing: -2.5px; line-height: 0.95;
+      color: #0F0F0F; margin-bottom: 16px;
+    }
+    .vtl-type {
+      display: block;
+      font-size: 11px; font-weight: 400;
+      color: rgba(15,15,15,0.4); line-height: 1.6;
+      margin-bottom: 22px;
+    }
+    .vtl-cycle {
       display: flex; gap: 5px; flex-wrap: wrap;
-      margin-bottom: 12px;
+      justify-content: flex-end;
     }
-    .eco-tl-phase {
+    .vtl-phase {
+      font-size: 8px; font-weight: 700;
+      letter-spacing: 0.11em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 100px;
+      border: 1px solid rgba(15,15,15,0.13);
+      color: rgba(15,15,15,0.35);
+    }
+    .vtl-phase.active {
+      background: rgba(76,92,45,0.1);
+      border-color: rgba(76,92,45,0.38);
+      color: #4C5C2D;
+    }
+
+    /* ── CENTER COLUMN — single node on the spine ── */
+    .vtl-col-center {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 3;
+    }
+    .vtl-node-circle {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: #0F0F0F;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .vtl-node-glyph {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.04em; color: #FFFFFF;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .vtl-node-glyph.is-active { opacity: 1; }
+
+    /* ── RIGHT COLUMN — cards stack from bottom ── */
+    .vtl-col-right {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Each card fills the right column absolutely, starts BELOW viewport */
+    .vtl-card {
+      position: absolute;
+      inset: 0;
+      transform: translateY(100%);
+      display: flex; flex-direction: column;
+      padding: 48px max(48px, 5vw) 48px 40px;
+      gap: 18px;
+      background: #FFFFFF; /* solid so it covers previous cards */
+      will-change: transform;
+    }
+    /* First card is immediately visible */
+    .vtl-card:first-child { transform: translateY(0); }
+
+    /* Image fills most of the card height */
+    .vtl-img {
+      flex: 1; min-height: 0;
+      border-radius: 12px;
+      background: rgba(15,15,15,0.04);
+      border: 1px solid rgba(15,15,15,0.07);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .vtl-img-label {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(15,15,15,0.2);
+    }
+
+    /* Info row below image */
+    .vtl-info {
+      flex-shrink: 0;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .vtl-kicker {
       font-size: 9px; font-weight: 700;
-      letter-spacing: .11em; text-transform: uppercase;
-      padding: 4px 11px; border-radius: 100px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      transition: background .35s, border-color .35s, color .35s;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(15,15,15,0.3);
     }
-    .eco-tl-phase.active {
-      background: rgba(76,92,45,.14);
-      border-color: rgba(76,92,45,.5);
-      color: #8DA85C;
+    .vtl-desc {
+      font-size: 13px; color: rgba(15,15,15,0.5);
+      line-height: 1.72; margin: 0;
     }
-    .eco-tl-product-label {
-      font-size: 10px; font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 5px;
-    }
-    .eco-tl-product-name {
-      font-size: 26px; font-weight: 700;
-      color: var(--ink); letter-spacing: -.4px; line-height: 1.15;
-      margin: 0 0 9px;
-    }
-    .eco-tl-desc {
-      font-size: 13.5px; color: var(--muted2);
-      line-height: 1.72; margin: 0 0 12px;
-    }
-    .eco-tl-chips { display: flex; gap: 5px; flex-wrap: wrap; }
-    .eco-tl-chip {
+    .vtl-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+    .vtl-chip {
       font-size: 10px; font-weight: 500;
-      color: var(--muted); border: 1px solid var(--border);
+      color: rgba(15,15,15,0.38);
+      border: 1px solid rgba(15,15,15,0.12);
       border-radius: 4px; padding: 3px 9px;
     }
 
-    @media (max-width: 900px) {
-      .eco-tl-wrap {
-        height: auto; margin: 0;
-        padding: 0 24px;
+    /* Mobile: revert to vertical scroll, no pin */
+    @media (max-width: 860px) {
+      .vtl {
+        height: auto; overflow: visible;
+        grid-template-columns: 1fr;
+        margin: 0;
       }
-      .eco-tl-inner { flex-direction: column; height: auto; padding: 0; gap: 36px; }
-      .eco-tl-left { width: 100%; }
-      .eco-tl-list { flex-direction: row; flex-wrap: wrap; gap: 8px; }
-      .eco-tl-item { padding: 6px 0; }
-      .eco-tl-right { height: 440px; }
+      .vtl::before { display: none; }
+      .vtl-col-left { display: none; }
+      .vtl-col-center { display: none; }
+      .vtl-col-right { position: static; height: auto; overflow: visible; }
+      .vtl-card {
+        position: relative; inset: auto;
+        transform: none !important;
+        margin-bottom: 32px;
+        padding: 32px 24px;
+        border: 1px solid rgba(15,15,15,0.07);
+        border-radius: 16px;
+      }
+      .vtl-img { min-height: 220px; flex: none; }
     }
 
     /* Arquitectura del ecosistema */
@@ -1722,180 +1734,182 @@
   <!-- ═══════════════════════════════════
        ECOSISTEMA
   ═══════════════════════════════════ -->
-  <section class="sec" id="ecosistema" data-bg="#0A0A0A">
+  <section class="sec light" id="ecosistema" data-bg="#FFFFFF">
     <div class="eco-header">
       <div class="s-label split-title r" data-splitting>Stack de productos</div>
       <h2 class="s-title split-title r d1" data-splitting>El ecosistema y<br /><i>mi trabajo en él</i></h2>
       <p class="eco-intro split-title r d2" data-splitting>Monopolio Group es una suite de productos que atiende todos los perfiles del mercado inmobiliario. Trabajé en 5 de las 6 verticales — desde el buscador principal hasta productos de datos estratégicos.</p>
     </div>
 
-    <!-- Ecosystem Product Timeline -->
-    <div class="eco-tl-wrap" id="ecoTimeline">
-      <div class="eco-tl-inner">
+    <!-- ══ ECOSYSTEM TIMELINE — texto fixed + derecha apila ══ -->
+    <div class="vtl" id="vtl">
 
-        <!-- Left: product list + fill indicator -->
-        <div class="eco-tl-left">
-          <div class="eco-tl-track"></div>
-          <div class="eco-tl-fill"></div>
-          <ul class="eco-tl-list">
-            <li class="eco-tl-item">
-              <span class="eco-tl-num">01</span>
-              <div class="eco-tl-lbl">
-                <span class="eco-tl-name">Buscador</span>
-                <span class="eco-tl-sub">Motor de búsqueda</span>
-              </div>
-            </li>
-            <li class="eco-tl-item">
-              <span class="eco-tl-num">02</span>
-              <div class="eco-tl-lbl">
-                <span class="eco-tl-name">Desarrollos</span>
-                <span class="eco-tl-sub">Obra nueva · B2C + B2B</span>
-              </div>
-            </li>
-            <li class="eco-tl-item">
-              <span class="eco-tl-num">03</span>
-              <div class="eco-tl-lbl">
-                <span class="eco-tl-name">Asesores</span>
-                <span class="eco-tl-sub">CRM inmobiliario</span>
-              </div>
-            </li>
-            <li class="eco-tl-item">
-              <span class="eco-tl-num">04</span>
-              <div class="eco-tl-lbl">
-                <span class="eco-tl-name">EDV</span>
-                <span class="eco-tl-sub">Estimación de valor</span>
-              </div>
-            </li>
-            <li class="eco-tl-item">
-              <span class="eco-tl-num">05</span>
-              <div class="eco-tl-lbl">
-                <span class="eco-tl-name">EDM</span>
-                <span class="eco-tl-sub">Viabilidad estratégica</span>
-              </div>
-            </li>
-          </ul>
+      <!-- ── LEFT: 5 text panels, absolutely stacked, only active is visible ── -->
+      <div class="vtl-col-left">
+
+        <!-- Panel 01 · Buscador -->
+        <div class="vtl-panel is-active" data-vtl-idx="0">
+          <span class="vtl-num">01</span>
+          <span class="vtl-name">Buscador</span>
+          <span class="vtl-type">B2C · Motor de búsqueda</span>
+          <div class="vtl-cycle">
+            <span class="vtl-phase">Estrategia</span>
+            <span class="vtl-phase active">Descubrir</span>
+            <span class="vtl-phase">Evaluar</span>
+            <span class="vtl-phase">Operar</span>
+          </div>
         </div>
 
-        <!-- Right: detail cards -->
-        <div class="eco-tl-right">
+        <!-- Panel 02 · Desarrollos -->
+        <div class="vtl-panel" data-vtl-idx="1">
+          <span class="vtl-num">02</span>
+          <span class="vtl-name">Desarrollos</span>
+          <span class="vtl-type">B2C + B2B · Obra nueva</span>
+          <div class="vtl-cycle">
+            <span class="vtl-phase">Estrategia</span>
+            <span class="vtl-phase active">Descubrir</span>
+            <span class="vtl-phase">Evaluar</span>
+            <span class="vtl-phase active">Operar</span>
+          </div>
+        </div>
 
-          <!-- 01 · Buscador -->
-          <div class="eco-tl-slide">
-            <div class="eco-tl-visual">
-              <span class="eco-tl-visual-label">Visual próximamente</span>
-            </div>
-            <div class="eco-tl-info">
-              <div class="eco-tl-cycle">
-                <span class="eco-tl-phase">Estrategia</span>
-                <span class="eco-tl-phase active">Descubrir</span>
-                <span class="eco-tl-phase">Evaluar</span>
-                <span class="eco-tl-phase">Operar</span>
-              </div>
-              <div class="eco-tl-product-label">B2C · Motor de búsqueda</div>
-              <h3 class="eco-tl-product-name">Monopolio Buscador</h3>
-              <p class="eco-tl-desc">La bolsa completa del mercado inmobiliario — toda la oferta en un solo lugar. Diseño y evolución de la experiencia central de búsqueda: reducción de fricción, calidad de información y soporte a múltiples intenciones: hogar, inversión y renta.</p>
-              <div class="eco-tl-chips">
-                <span class="eco-tl-chip">Compradores</span>
-                <span class="eco-tl-chip">Inversores</span>
-                <span class="eco-tl-chip">Arrendatarios</span>
-              </div>
+        <!-- Panel 03 · Asesores -->
+        <div class="vtl-panel" data-vtl-idx="2">
+          <span class="vtl-num">03</span>
+          <span class="vtl-name">Asesores</span>
+          <span class="vtl-type">B2B · CRM Inmobiliario</span>
+          <div class="vtl-cycle">
+            <span class="vtl-phase">Estrategia</span>
+            <span class="vtl-phase">Descubrir</span>
+            <span class="vtl-phase active">Evaluar</span>
+            <span class="vtl-phase active">Operar</span>
+          </div>
+        </div>
+
+        <!-- Panel 04 · EDV -->
+        <div class="vtl-panel" data-vtl-idx="3">
+          <span class="vtl-num">04</span>
+          <span class="vtl-name">EDV</span>
+          <span class="vtl-type">B2B · Estimación de valor</span>
+          <div class="vtl-cycle">
+            <span class="vtl-phase">Estrategia</span>
+            <span class="vtl-phase">Descubrir</span>
+            <span class="vtl-phase active">Evaluar</span>
+            <span class="vtl-phase">Operar</span>
+          </div>
+        </div>
+
+        <!-- Panel 05 · EDM -->
+        <div class="vtl-panel" data-vtl-idx="4">
+          <span class="vtl-num">05</span>
+          <span class="vtl-name">EDM</span>
+          <span class="vtl-type">Data · Viabilidad estratégica</span>
+          <div class="vtl-cycle">
+            <span class="vtl-phase active">Estrategia</span>
+            <span class="vtl-phase">Descubrir</span>
+            <span class="vtl-phase">Evaluar</span>
+            <span class="vtl-phase">Operar</span>
+          </div>
+        </div>
+
+      </div><!-- .vtl-col-left -->
+
+      <!-- ── CENTER: single node circle, glyph changes per product ── -->
+      <div class="vtl-col-center">
+        <div class="vtl-node-circle">
+          <span class="vtl-node-glyph is-active" data-vtl-idx="0">B</span>
+          <span class="vtl-node-glyph" data-vtl-idx="1">D</span>
+          <span class="vtl-node-glyph" data-vtl-idx="2">A</span>
+          <span class="vtl-node-glyph" data-vtl-idx="3">V</span>
+          <span class="vtl-node-glyph" data-vtl-idx="4">M</span>
+        </div>
+      </div>
+
+      <!-- ── RIGHT: 5 cards stacked, each slides up from below ── -->
+      <div class="vtl-col-right">
+
+        <!-- Card 01 · Buscador — starts visible (translateY: 0) -->
+        <div class="vtl-card" data-vtl-idx="0">
+          <div class="vtl-img">
+            <span class="vtl-img-label">Visual próximamente</span>
+          </div>
+          <div class="vtl-info">
+            <div class="vtl-kicker">Monopolio Buscador</div>
+            <p class="vtl-desc">Toda la oferta en un solo lugar. Diseño y evolución de la experiencia central de búsqueda: reducción de fricción, calidad de información y soporte a múltiples intenciones.</p>
+            <div class="vtl-chips">
+              <span class="vtl-chip">Compradores</span>
+              <span class="vtl-chip">Inversores</span>
+              <span class="vtl-chip">Arrendatarios</span>
             </div>
           </div>
+        </div>
 
-          <!-- 02 · Desarrollos -->
-          <div class="eco-tl-slide">
-            <div class="eco-tl-visual">
-              <span class="eco-tl-visual-label">Visual próximamente</span>
-            </div>
-            <div class="eco-tl-info">
-              <div class="eco-tl-cycle">
-                <span class="eco-tl-phase">Estrategia</span>
-                <span class="eco-tl-phase active">Descubrir</span>
-                <span class="eco-tl-phase">Evaluar</span>
-                <span class="eco-tl-phase active">Operar</span>
-              </div>
-              <div class="eco-tl-product-label">B2C + B2B · Obra nueva</div>
-              <h3 class="eco-tl-product-name">Monopolio Desarrollos</h3>
-              <p class="eco-tl-desc">Dos caras del mismo producto: el buscador especializado en obra nueva para compradores, y la plataforma B2B donde los desarrolladores dan de alta sus proyectos, gestionan su catálogo de unidades y administran el pipeline de leads.</p>
-              <div class="eco-tl-chips">
-                <span class="eco-tl-chip">Compradores</span>
-                <span class="eco-tl-chip">Desarrolladores</span>
-                <span class="eco-tl-chip">Constructoras</span>
-              </div>
+        <!-- Card 02 · Desarrollos — starts below (translateY: 100%) -->
+        <div class="vtl-card" data-vtl-idx="1">
+          <div class="vtl-img">
+            <span class="vtl-img-label">Visual próximamente</span>
+          </div>
+          <div class="vtl-info">
+            <div class="vtl-kicker">Monopolio Desarrollos</div>
+            <p class="vtl-desc">El buscador especializado en obra nueva para compradores, y la plataforma B2B donde los desarrolladores dan de alta sus proyectos y administran el pipeline de leads.</p>
+            <div class="vtl-chips">
+              <span class="vtl-chip">Compradores</span>
+              <span class="vtl-chip">Desarrolladores</span>
+              <span class="vtl-chip">Constructoras</span>
             </div>
           </div>
+        </div>
 
-          <!-- 03 · Asesores -->
-          <div class="eco-tl-slide">
-            <div class="eco-tl-visual">
-              <span class="eco-tl-visual-label">Visual próximamente</span>
-            </div>
-            <div class="eco-tl-info">
-              <div class="eco-tl-cycle">
-                <span class="eco-tl-phase">Estrategia</span>
-                <span class="eco-tl-phase">Descubrir</span>
-                <span class="eco-tl-phase active">Evaluar</span>
-                <span class="eco-tl-phase active">Operar</span>
-              </div>
-              <div class="eco-tl-product-label">B2B · CRM Inmobiliario</div>
-              <h3 class="eco-tl-product-name">Monopolio Asesores</h3>
-              <p class="eco-tl-desc">Herramientas para profesionales del sector: publicación de propiedades, gestión de listings, mejora de calidad de información y operación eficiente del pipeline de ventas.</p>
-              <div class="eco-tl-chips">
-                <span class="eco-tl-chip">Asesores</span>
-                <span class="eco-tl-chip">Agencias</span>
-              </div>
+        <!-- Card 03 · Asesores -->
+        <div class="vtl-card" data-vtl-idx="2">
+          <div class="vtl-img">
+            <span class="vtl-img-label">Visual próximamente</span>
+          </div>
+          <div class="vtl-info">
+            <div class="vtl-kicker">Monopolio Asesores</div>
+            <p class="vtl-desc">Publicación de propiedades, gestión de listings, mejora de calidad de información y operación eficiente del pipeline de ventas para asesores y agencias.</p>
+            <div class="vtl-chips">
+              <span class="vtl-chip">Asesores</span>
+              <span class="vtl-chip">Agencias</span>
             </div>
           </div>
+        </div>
 
-          <!-- 04 · EDV -->
-          <div class="eco-tl-slide">
-            <div class="eco-tl-visual">
-              <span class="eco-tl-visual-label">Visual próximamente</span>
-            </div>
-            <div class="eco-tl-info">
-              <div class="eco-tl-cycle">
-                <span class="eco-tl-phase">Estrategia</span>
-                <span class="eco-tl-phase">Descubrir</span>
-                <span class="eco-tl-phase active">Evaluar</span>
-                <span class="eco-tl-phase">Operar</span>
-              </div>
-              <div class="eco-tl-product-label">B2B · Estimación de valor</div>
-              <h3 class="eco-tl-product-name">EDV</h3>
-              <p class="eco-tl-desc">Flujos, reportes y modelos de presentación para estimar el valor de propiedades. UX claros para perfiles muy distintos: asesores, valuadores y propietarios que necesitan entender qué vale lo que tienen.</p>
-              <div class="eco-tl-chips">
-                <span class="eco-tl-chip">Asesores</span>
-                <span class="eco-tl-chip">Valuadores</span>
-                <span class="eco-tl-chip">Propietarios</span>
-              </div>
+        <!-- Card 04 · EDV -->
+        <div class="vtl-card" data-vtl-idx="3">
+          <div class="vtl-img">
+            <span class="vtl-img-label">Visual próximamente</span>
+          </div>
+          <div class="vtl-info">
+            <div class="vtl-kicker">EDV — Estimador de Valor</div>
+            <p class="vtl-desc">Flujos, reportes y modelos de presentación para estimar el valor de propiedades. UX claros para asesores, valuadores y propietarios.</p>
+            <div class="vtl-chips">
+              <span class="vtl-chip">Asesores</span>
+              <span class="vtl-chip">Valuadores</span>
+              <span class="vtl-chip">Propietarios</span>
             </div>
           </div>
+        </div>
 
-          <!-- 05 · EDM -->
-          <div class="eco-tl-slide">
-            <div class="eco-tl-visual">
-              <span class="eco-tl-visual-label">Visual próximamente</span>
-            </div>
-            <div class="eco-tl-info">
-              <div class="eco-tl-cycle">
-                <span class="eco-tl-phase active">Estrategia</span>
-                <span class="eco-tl-phase">Descubrir</span>
-                <span class="eco-tl-phase">Evaluar</span>
-                <span class="eco-tl-phase">Operar</span>
-              </div>
-              <div class="eco-tl-product-label">Data · Viabilidad estratégica</div>
-              <h3 class="eco-tl-product-name">EDM</h3>
-              <p class="eco-tl-desc">Inteligencia de mercado para tomar decisiones antes de construir — análisis de viabilidad territorial, tendencias de precio y lectura de demanda. Entra al ciclo antes que cualquier otro producto: cuando todavía es una oportunidad sobre un mapa.</p>
-              <div class="eco-tl-chips">
-                <span class="eco-tl-chip">Desarrolladores</span>
-                <span class="eco-tl-chip">Constructoras</span>
-                <span class="eco-tl-chip">Inversores institucionales</span>
-              </div>
+        <!-- Card 05 · EDM -->
+        <div class="vtl-card" data-vtl-idx="4">
+          <div class="vtl-img">
+            <span class="vtl-img-label">Visual próximamente</span>
+          </div>
+          <div class="vtl-info">
+            <div class="vtl-kicker">EDM — Estimador de Mercado</div>
+            <p class="vtl-desc">Análisis de viabilidad territorial, tendencias de precio y lectura de demanda. Entra al ciclo antes que cualquier otro producto: cuando todavía es una oportunidad sobre un mapa.</p>
+            <div class="vtl-chips">
+              <span class="vtl-chip">Desarrolladores</span>
+              <span class="vtl-chip">Constructoras</span>
+              <span class="vtl-chip">Inversores institucionales</span>
             </div>
           </div>
+        </div>
 
-        </div><!-- .eco-tl-right -->
-      </div><!-- .eco-tl-inner -->
-    </div><!-- .eco-tl-wrap -->
+      </div><!-- .vtl-col-right -->
+
+    </div><!-- .vtl -->
 
   </section>
 
@@ -3105,67 +3119,69 @@
 
 
   /* ─────────────────────────────────────────────
-     ECO PRODUCT TIMELINE
-     Pattern: ScrollTrigger lateral pin indicator
-     Left list + fill bar → right detail card
+     VERTICAL TIMELINE
+     Pattern: GSAP pin · texto fixed · derecha apila
+     - Sección pinneada por (n * 100vh) de scroll
+     - LEFT: paneles de texto superpuestos, solo el activo visible
+     - CENTER: nodo único, cambia de glifo según producto activo
+     - RIGHT: cards absolutas que transicionan de translateY(100%)
+               a translateY(0) una por una conforme avanza el scroll
   ───────────────────────────────────────────── */
-  (function initEcoTimeline() {
+  (function initVtl() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-    const wrap   = document.getElementById('ecoTimeline');
-    const fill   = document.querySelector('.eco-tl-fill');
-    const items  = gsap.utils.toArray('.eco-tl-item');
-    const slides = gsap.utils.toArray('.eco-tl-slide');
+    var wrap    = document.getElementById('vtl');
+    var panels  = gsap.utils.toArray('#vtl .vtl-panel');
+    var glyphs  = gsap.utils.toArray('#vtl .vtl-node-glyph');
+    var cards   = gsap.utils.toArray('#vtl .vtl-card');
+    var n       = cards.length; // 5
 
-    if (!wrap || !items.length || !slides.length) return;
+    if (!wrap || !n) return;
 
-    const n = items.length;
-    let currentIdx = -1;
+    // ── Initial state ──
+    // Card 0 is already visible (translateY: 0 via CSS :first-child rule)
+    // Cards 1-4 start below the fold
+    gsap.set(cards.slice(1), { y: '100%' });
 
-    // Set initial fill height (1/n of total)
-    gsap.set(fill, { scaleY: 1 / n, transformOrigin: 'top center' });
-
+    // ── Panel/glyph switch helper ──
+    var currentIdx = 0;
     function activate(idx) {
       if (idx === currentIdx) return;
       currentIdx = idx;
-
-      // Toggle list item states
-      items.forEach(function(el, i) {
-        el.classList.toggle('is-active', i === idx);
-      });
-
-      // Crossfade slides
-      slides.forEach(function(el, i) {
-        gsap.to(el, {
-          autoAlpha: i === idx ? 1 : 0,
-          y:         i === idx ? 0 : 10,
-          duration:  0.38,
-          ease:      'power2.out'
-        });
-      });
-
-      // Grow fill bar
-      gsap.to(fill, {
-        scaleY:   (idx + 1) / n,
-        ease:     'power2.out',
-        duration: 0.45
-      });
+      panels.forEach(function(p, i) { p.classList.toggle('is-active', i === idx); });
+      glyphs.forEach(function(g, i) { g.classList.toggle('is-active', i === idx); });
     }
 
-    // Bootstrap: first product visible
-    activate(0);
-
-    ScrollTrigger.create({
-      trigger: wrap,
-      start:   'top top',
-      end:     '+=' + (n * 90) + '%',
-      pin:     true,
-      scrub:   0.8,
-      onUpdate: function(self) {
-        var idx = Math.min(Math.floor(self.progress * n), n - 1);
-        activate(idx);
+    // ── Build the GSAP timeline ──
+    // One "segment" per product. Segment 0: hold (card 0 visible).
+    // Segments 1–4: each card slides up from translateY(100%) to 0.
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger:      wrap,
+        start:        'top top',
+        end:          '+=' + (n * 100) + 'vh',
+        pin:          true,
+        anticipatePin: 1,
+        scrub:        1,
+        onUpdate: function(self) {
+          // Switch panel/glyph at each 1/n boundary
+          var idx = Math.min(Math.floor(self.progress * n), n - 1);
+          activate(idx);
+        }
       }
     });
+
+    // Segment 0: empty hold (card 0 is already in place, nothing to animate)
+    tl.to({}, { duration: 1 });
+
+    // Segments 1–4: slide each subsequent card up
+    for (var i = 1; i < n; i++) {
+      tl.to(cards[i], {
+        y: '0%',
+        duration: 1,
+        ease: 'power2.inOut'
+      });
+    }
   })();
 
 
