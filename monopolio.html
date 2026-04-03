@@ -922,26 +922,39 @@
       border-radius: 4px; padding: 3px 9px;
     }
 
-    /* Mobile: revert to vertical scroll, no pin */
+    /* Mobile: simple vertical layout, no animations */
     @media (max-width: 860px) {
       .vtl {
         height: auto; overflow: visible;
         grid-template-columns: 1fr;
         margin: 0;
+        opacity: 1 !important;
+        transform: none !important;
       }
       .vtl::before { display: none; }
       .vtl-col-left { display: none; }
       .vtl-col-center { display: none; }
-      .vtl-col-right { position: static; height: auto; overflow: visible; }
+      .vtl-col-right {
+        position: static; height: auto; overflow: visible;
+        opacity: 1 !important;
+        transform: none !important;
+      }
       .vtl-card {
         position: relative; inset: auto;
         transform: none !important;
-        margin-bottom: 32px;
-        padding: 32px 24px;
-        border: 1px solid rgba(15,15,15,0.07);
-        border-radius: 16px;
+        height: auto;
+        margin-bottom: 36px;
+        padding: 28px 20px;
+        border: 1px solid rgba(15,15,15,0.05);
+        border-radius: 12px;
+        opacity: 1;
       }
-      .vtl-img { min-height: 220px; flex: none; }
+      .vtl-img { min-height: 240px; flex: none; }
+      .vtl-num { margin-bottom: 16px; }
+      .vtl-name { font-size: clamp(24px, 6vw, 32px); margin-bottom: 12px; }
+      .vtl-type { font-size: 12px; margin-bottom: 16px; }
+      .vtl-cycle { gap: 6px; }
+      .vtl-phase { font-size: 9px; padding: 3px 8px; }
     }
 
     /* Arquitectura del ecosistema */
@@ -3201,16 +3214,21 @@
     }
 
     var currentIdx = -1;
+    var isMobile = window.innerWidth <= 860;
+
     function activate(idx) {
       if (idx === currentIdx) return;
 
-      // Animate out previous title
-      if (currentIdx >= 0) {
-        var prevPanel = panels[currentIdx];
-        if (prevPanel) {
-          var prevTitle = prevPanel.querySelector('.vtl-name.split-title');
-          if (prevTitle) {
-            animateSplitTitleOut(prevTitle);
+      // Only animate on desktop
+      if (!isMobile) {
+        // Animate out previous title
+        if (currentIdx >= 0) {
+          var prevPanel = panels[currentIdx];
+          if (prevPanel) {
+            var prevTitle = prevPanel.querySelector('.vtl-name.split-title');
+            if (prevTitle) {
+              animateSplitTitleOut(prevTitle);
+            }
           }
         }
       }
@@ -3219,7 +3237,7 @@
       panels.forEach(function(p, i) {
         var isActive = i === idx;
         p.classList.toggle('is-active', isActive);
-        if (isActive) {
+        if (isActive && !isMobile) {
           var titleEl = p.querySelector('.vtl-name.split-title');
           if (titleEl && typeof Splitting !== 'undefined') {
             Splitting({ target: titleEl });
