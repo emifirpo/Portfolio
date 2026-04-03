@@ -741,6 +741,183 @@
 
     /* ─── STACK UNIFICADO ─── */
 
+    /* ── ECO PRODUCT TIMELINE ── */
+    .eco-tl-wrap {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      /* break out of .sec horizontal padding to use full width */
+      margin-left:  calc(-1 * max(40px, calc((100% - var(--mw)) / 2)));
+      margin-right: calc(-1 * max(40px, calc((100% - var(--mw)) / 2)));
+      overflow: hidden;
+    }
+    .eco-tl-inner {
+      width: 100%;
+      padding: 0 max(48px, calc((100% - var(--mw)) / 2));
+      display: flex;
+      gap: 72px;
+      align-items: stretch;
+      height: 72vh;
+    }
+
+    /* Left: list + vertical fill */
+    .eco-tl-left {
+      width: 260px;
+      flex-shrink: 0;
+      position: relative;
+      padding-left: 22px;
+      display: flex;
+      align-items: stretch;
+    }
+    .eco-tl-track {
+      position: absolute;
+      left: 0; top: 0;
+      width: 1.5px; height: 100%;
+      background: var(--border-hi);
+      border-radius: 1px;
+    }
+    .eco-tl-fill {
+      position: absolute;
+      left: 0; top: 0;
+      width: 1.5px; height: 100%;
+      background: var(--accent);
+      transform-origin: top center;
+      border-radius: 1px;
+    }
+    .eco-tl-list {
+      list-style: none;
+      padding: 0; margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .eco-tl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 8px 0;
+      cursor: default;
+    }
+    .eco-tl-num {
+      font-size: 10px; font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted); letter-spacing: .12em;
+      transition: color .4s ease;
+      flex-shrink: 0;
+      padding-top: 3px;
+    }
+    .eco-tl-lbl { display: flex; flex-direction: column; gap: 3px; }
+    .eco-tl-name {
+      font-size: 17px; font-weight: 300;
+      color: rgba(240,237,232,0.2);
+      letter-spacing: -.02em; line-height: 1.2;
+      transition: color .4s ease, font-weight .3s ease;
+    }
+    .eco-tl-sub {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: transparent;
+      transition: color .4s ease;
+    }
+    .eco-tl-item.is-active .eco-tl-num  { color: var(--accent); }
+    .eco-tl-item.is-active .eco-tl-name { color: var(--ink); font-weight: 500; }
+    .eco-tl-item.is-active .eco-tl-sub  { color: #8DA85C; }
+
+    /* Right: stacked slides */
+    .eco-tl-right {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+      min-width: 0;
+    }
+    .eco-tl-slide {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      gap: 20px;
+      opacity: 0; visibility: hidden;
+    }
+
+    /* Visual placeholder */
+    .eco-tl-visual {
+      flex: 1; min-height: 0;
+      border-radius: 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border-hi);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .eco-tl-visual::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(76,92,45,0.06) 0%, transparent 70%);
+    }
+    .eco-tl-visual-label {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 10px;
+      position: relative;
+    }
+    .eco-tl-visual-label::before,
+    .eco-tl-visual-label::after {
+      content: '';
+      display: block; width: 24px; height: 1px;
+      background: var(--border-hi);
+    }
+
+    /* Info panel */
+    .eco-tl-info { flex-shrink: 0; }
+    .eco-tl-cycle {
+      display: flex; gap: 5px; flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .eco-tl-phase {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: .11em; text-transform: uppercase;
+      padding: 4px 11px; border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: background .35s, border-color .35s, color .35s;
+    }
+    .eco-tl-phase.active {
+      background: rgba(76,92,45,.14);
+      border-color: rgba(76,92,45,.5);
+      color: #8DA85C;
+    }
+    .eco-tl-product-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 5px;
+    }
+    .eco-tl-product-name {
+      font-size: 26px; font-weight: 700;
+      color: var(--ink); letter-spacing: -.4px; line-height: 1.15;
+      margin: 0 0 9px;
+    }
+    .eco-tl-desc {
+      font-size: 13.5px; color: var(--muted2);
+      line-height: 1.72; margin: 0 0 12px;
+    }
+    .eco-tl-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+    .eco-tl-chip {
+      font-size: 10px; font-weight: 500;
+      color: var(--muted); border: 1px solid var(--border);
+      border-radius: 4px; padding: 3px 9px;
+    }
+
+    @media (max-width: 900px) {
+      .eco-tl-wrap {
+        height: auto; margin: 0;
+        padding: 0 24px;
+      }
+      .eco-tl-inner { flex-direction: column; height: auto; padding: 0; gap: 36px; }
+      .eco-tl-left { width: 100%; }
+      .eco-tl-list { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+      .eco-tl-item { padding: 6px 0; }
+      .eco-tl-right { height: 440px; }
+    }
+
     /* Arquitectura del ecosistema */
     .stack-arch {
       display: grid;
@@ -1552,115 +1729,174 @@
       <p class="eco-intro split-title r d2" data-splitting>Monopolio Group es una suite de productos que atiende todos los perfiles del mercado inmobiliario. Trabajé en 5 de las 6 verticales — desde el buscador principal hasta productos de datos estratégicos.</p>
     </div>
 
-    <!-- Arquitectura del stack -->
-    <div class="stack-arch r d2">
-      <div class="stack-col">
-        <div class="stack-col-label">B2C · Consumidor final</div>
-        <div class="stack-product mine">
-          <div class="stack-dot"></div>
-          <div><div class="stack-product-name">Monopolio Buscador</div><div class="stack-product-type">Motor de búsqueda</div></div>
-        </div>
-        <div class="stack-product mine">
-          <div class="stack-dot"></div>
-          <div><div class="stack-product-name">Monopolio Desarrollos</div><div class="stack-product-type">Obra nueva</div></div>
-        </div>
-      </div>
-      <div class="stack-col">
-        <div class="stack-col-label">B2B · Profesionales</div>
-        <div class="stack-product mine">
-          <div class="stack-dot"></div>
-          <div><div class="stack-product-name">Monopolio Asesores</div><div class="stack-product-type">CRM inmobiliario</div></div>
-        </div>
-        <div class="stack-product mine">
-          <div class="stack-dot"></div>
-          <div><div class="stack-product-name">EDV</div><div class="stack-product-type">Estimación de valor</div></div>
-        </div>
-      </div>
-      <div class="stack-col">
-        <div class="stack-col-label">Data · Inteligencia de mercado</div>
-        <div class="stack-product mine">
-          <div class="stack-dot"></div>
-          <div><div class="stack-product-name">EDM</div><div class="stack-product-type">Estudios de mercado</div></div>
-        </div>
-        <div class="stack-product">
-          <div class="stack-dot"></div>
-          <div><div class="stack-product-name">Evalyze</div><div class="stack-product-type">Motor de precios</div></div>
-        </div>
-      </div>
-    </div>
+    <!-- Ecosystem Product Timeline -->
+    <div class="eco-tl-wrap" id="ecoTimeline">
+      <div class="eco-tl-inner">
 
-    <!-- Tabla editorial de trabajo -->
-    <div class="work-table">
+        <!-- Left: product list + fill indicator -->
+        <div class="eco-tl-left">
+          <div class="eco-tl-track"></div>
+          <div class="eco-tl-fill"></div>
+          <ul class="eco-tl-list">
+            <li class="eco-tl-item">
+              <span class="eco-tl-num">01</span>
+              <div class="eco-tl-lbl">
+                <span class="eco-tl-name">Buscador</span>
+                <span class="eco-tl-sub">Motor de búsqueda</span>
+              </div>
+            </li>
+            <li class="eco-tl-item">
+              <span class="eco-tl-num">02</span>
+              <div class="eco-tl-lbl">
+                <span class="eco-tl-name">Desarrollos</span>
+                <span class="eco-tl-sub">Obra nueva · B2C + B2B</span>
+              </div>
+            </li>
+            <li class="eco-tl-item">
+              <span class="eco-tl-num">03</span>
+              <div class="eco-tl-lbl">
+                <span class="eco-tl-name">Asesores</span>
+                <span class="eco-tl-sub">CRM inmobiliario</span>
+              </div>
+            </li>
+            <li class="eco-tl-item">
+              <span class="eco-tl-num">04</span>
+              <div class="eco-tl-lbl">
+                <span class="eco-tl-name">EDV</span>
+                <span class="eco-tl-sub">Estimación de valor</span>
+              </div>
+            </li>
+            <li class="eco-tl-item">
+              <span class="eco-tl-num">05</span>
+              <div class="eco-tl-lbl">
+                <span class="eco-tl-name">EDM</span>
+                <span class="eco-tl-sub">Viabilidad estratégica</span>
+              </div>
+            </li>
+          </ul>
+        </div>
 
-      <div class="work-row r">
-        <div class="work-idx">01</div>
-        <div class="work-product-col">
-          <div class="work-product-name">Monopolio<br>Buscador</div>
-          <div class="work-product-type">Motor de búsqueda</div>
-        </div>
-        <div class="work-desc">Diseño y evolución de la experiencia central de búsqueda de propiedades — reducción de fricción, mejora de calidad de información y soporte a múltiples intenciones de búsqueda: hogar, inversión y renta.</div>
-        <div class="work-chips">
-          <span class="work-chip">Compradores</span>
-          <span class="work-chip">Asesores</span>
-          <span class="work-chip">Inversores</span>
-        </div>
-      </div>
+        <!-- Right: detail cards -->
+        <div class="eco-tl-right">
 
-      <div class="work-row r">
-        <div class="work-idx">02</div>
-        <div class="work-product-col">
-          <div class="work-product-name">Monopolio<br>Asesores</div>
-          <div class="work-product-type">CRM Inmobiliario</div>
-        </div>
-        <div class="work-desc">Herramientas para profesionales del sector: publicación de propiedades, gestión de listings, mejora de calidad de información y operación eficiente del pipeline de ventas.</div>
-        <div class="work-chips">
-          <span class="work-chip">Asesores</span>
-          <span class="work-chip">Agencias</span>
-        </div>
-      </div>
+          <!-- 01 · Buscador -->
+          <div class="eco-tl-slide">
+            <div class="eco-tl-visual">
+              <span class="eco-tl-visual-label">Visual próximamente</span>
+            </div>
+            <div class="eco-tl-info">
+              <div class="eco-tl-cycle">
+                <span class="eco-tl-phase">Estrategia</span>
+                <span class="eco-tl-phase active">Descubrir</span>
+                <span class="eco-tl-phase">Evaluar</span>
+                <span class="eco-tl-phase">Operar</span>
+              </div>
+              <div class="eco-tl-product-label">B2C · Motor de búsqueda</div>
+              <h3 class="eco-tl-product-name">Monopolio Buscador</h3>
+              <p class="eco-tl-desc">La bolsa completa del mercado inmobiliario — toda la oferta en un solo lugar. Diseño y evolución de la experiencia central de búsqueda: reducción de fricción, calidad de información y soporte a múltiples intenciones: hogar, inversión y renta.</p>
+              <div class="eco-tl-chips">
+                <span class="eco-tl-chip">Compradores</span>
+                <span class="eco-tl-chip">Inversores</span>
+                <span class="eco-tl-chip">Arrendatarios</span>
+              </div>
+            </div>
+          </div>
 
-      <div class="work-row r">
-        <div class="work-idx">03</div>
-        <div class="work-product-col">
-          <div class="work-product-name">Monopolio<br>Desarrollos</div>
-          <div class="work-product-type">Obra nueva</div>
-        </div>
-        <div class="work-desc">Flujos de carga y administración de desarrollos, visualización comercial de unidades y presentación de obra nueva — desde la perspectiva del desarrollador y del comprador.</div>
-        <div class="work-chips">
-          <span class="work-chip">Desarrolladores</span>
-          <span class="work-chip">Compradores</span>
-        </div>
-      </div>
+          <!-- 02 · Desarrollos -->
+          <div class="eco-tl-slide">
+            <div class="eco-tl-visual">
+              <span class="eco-tl-visual-label">Visual próximamente</span>
+            </div>
+            <div class="eco-tl-info">
+              <div class="eco-tl-cycle">
+                <span class="eco-tl-phase">Estrategia</span>
+                <span class="eco-tl-phase active">Descubrir</span>
+                <span class="eco-tl-phase">Evaluar</span>
+                <span class="eco-tl-phase active">Operar</span>
+              </div>
+              <div class="eco-tl-product-label">B2C + B2B · Obra nueva</div>
+              <h3 class="eco-tl-product-name">Monopolio Desarrollos</h3>
+              <p class="eco-tl-desc">Dos caras del mismo producto: el buscador especializado en obra nueva para compradores, y la plataforma B2B donde los desarrolladores dan de alta sus proyectos, gestionan su catálogo de unidades y administran el pipeline de leads.</p>
+              <div class="eco-tl-chips">
+                <span class="eco-tl-chip">Compradores</span>
+                <span class="eco-tl-chip">Desarrolladores</span>
+                <span class="eco-tl-chip">Constructoras</span>
+              </div>
+            </div>
+          </div>
 
-      <div class="work-row r">
-        <div class="work-idx">04</div>
-        <div class="work-product-col">
-          <div class="work-product-name">EDV</div>
-          <div class="work-product-type">Estimación de valor</div>
-        </div>
-        <div class="work-desc">Flujos, reportes y modelos de presentación orientados a estimar el valor de propiedades. Integración de datos con UX claros para perfiles muy distintos: asesores, valuadores y propietarios.</div>
-        <div class="work-chips">
-          <span class="work-chip">Asesores</span>
-          <span class="work-chip">Valuadores</span>
-          <span class="work-chip">Propietarios</span>
-        </div>
-      </div>
+          <!-- 03 · Asesores -->
+          <div class="eco-tl-slide">
+            <div class="eco-tl-visual">
+              <span class="eco-tl-visual-label">Visual próximamente</span>
+            </div>
+            <div class="eco-tl-info">
+              <div class="eco-tl-cycle">
+                <span class="eco-tl-phase">Estrategia</span>
+                <span class="eco-tl-phase">Descubrir</span>
+                <span class="eco-tl-phase active">Evaluar</span>
+                <span class="eco-tl-phase active">Operar</span>
+              </div>
+              <div class="eco-tl-product-label">B2B · CRM Inmobiliario</div>
+              <h3 class="eco-tl-product-name">Monopolio Asesores</h3>
+              <p class="eco-tl-desc">Herramientas para profesionales del sector: publicación de propiedades, gestión de listings, mejora de calidad de información y operación eficiente del pipeline de ventas.</p>
+              <div class="eco-tl-chips">
+                <span class="eco-tl-chip">Asesores</span>
+                <span class="eco-tl-chip">Agencias</span>
+              </div>
+            </div>
+          </div>
 
-      <div class="work-row r">
-        <div class="work-idx">05</div>
-        <div class="work-product-col">
-          <div class="work-product-name">EDM</div>
-          <div class="work-product-type">Estudios de mercado</div>
-        </div>
-        <div class="work-desc">Productos de datos con insights de mercado, lectura territorial y valor estratégico para perfiles B2B e institucionales. Discovery, hipótesis y validación de nuevas oportunidades de datos.</div>
-        <div class="work-chips">
-          <span class="work-chip">Desarrolladores</span>
-          <span class="work-chip">Constructoras</span>
-          <span class="work-chip">Inversores</span>
-        </div>
-      </div>
+          <!-- 04 · EDV -->
+          <div class="eco-tl-slide">
+            <div class="eco-tl-visual">
+              <span class="eco-tl-visual-label">Visual próximamente</span>
+            </div>
+            <div class="eco-tl-info">
+              <div class="eco-tl-cycle">
+                <span class="eco-tl-phase">Estrategia</span>
+                <span class="eco-tl-phase">Descubrir</span>
+                <span class="eco-tl-phase active">Evaluar</span>
+                <span class="eco-tl-phase">Operar</span>
+              </div>
+              <div class="eco-tl-product-label">B2B · Estimación de valor</div>
+              <h3 class="eco-tl-product-name">EDV</h3>
+              <p class="eco-tl-desc">Flujos, reportes y modelos de presentación para estimar el valor de propiedades. UX claros para perfiles muy distintos: asesores, valuadores y propietarios que necesitan entender qué vale lo que tienen.</p>
+              <div class="eco-tl-chips">
+                <span class="eco-tl-chip">Asesores</span>
+                <span class="eco-tl-chip">Valuadores</span>
+                <span class="eco-tl-chip">Propietarios</span>
+              </div>
+            </div>
+          </div>
 
-    </div>
+          <!-- 05 · EDM -->
+          <div class="eco-tl-slide">
+            <div class="eco-tl-visual">
+              <span class="eco-tl-visual-label">Visual próximamente</span>
+            </div>
+            <div class="eco-tl-info">
+              <div class="eco-tl-cycle">
+                <span class="eco-tl-phase active">Estrategia</span>
+                <span class="eco-tl-phase">Descubrir</span>
+                <span class="eco-tl-phase">Evaluar</span>
+                <span class="eco-tl-phase">Operar</span>
+              </div>
+              <div class="eco-tl-product-label">Data · Viabilidad estratégica</div>
+              <h3 class="eco-tl-product-name">EDM</h3>
+              <p class="eco-tl-desc">Inteligencia de mercado para tomar decisiones antes de construir — análisis de viabilidad territorial, tendencias de precio y lectura de demanda. Entra al ciclo antes que cualquier otro producto: cuando todavía es una oportunidad sobre un mapa.</p>
+              <div class="eco-tl-chips">
+                <span class="eco-tl-chip">Desarrolladores</span>
+                <span class="eco-tl-chip">Constructoras</span>
+                <span class="eco-tl-chip">Inversores institucionales</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- .eco-tl-right -->
+      </div><!-- .eco-tl-inner -->
+    </div><!-- .eco-tl-wrap -->
+
   </section>
 
 
@@ -2866,6 +3102,71 @@
   
 
 
+
+
+  /* ─────────────────────────────────────────────
+     ECO PRODUCT TIMELINE
+     Pattern: ScrollTrigger lateral pin indicator
+     Left list + fill bar → right detail card
+  ───────────────────────────────────────────── */
+  (function initEcoTimeline() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    const wrap   = document.getElementById('ecoTimeline');
+    const fill   = document.querySelector('.eco-tl-fill');
+    const items  = gsap.utils.toArray('.eco-tl-item');
+    const slides = gsap.utils.toArray('.eco-tl-slide');
+
+    if (!wrap || !items.length || !slides.length) return;
+
+    const n = items.length;
+    let currentIdx = -1;
+
+    // Set initial fill height (1/n of total)
+    gsap.set(fill, { scaleY: 1 / n, transformOrigin: 'top center' });
+
+    function activate(idx) {
+      if (idx === currentIdx) return;
+      currentIdx = idx;
+
+      // Toggle list item states
+      items.forEach(function(el, i) {
+        el.classList.toggle('is-active', i === idx);
+      });
+
+      // Crossfade slides
+      slides.forEach(function(el, i) {
+        gsap.to(el, {
+          autoAlpha: i === idx ? 1 : 0,
+          y:         i === idx ? 0 : 10,
+          duration:  0.38,
+          ease:      'power2.out'
+        });
+      });
+
+      // Grow fill bar
+      gsap.to(fill, {
+        scaleY:   (idx + 1) / n,
+        ease:     'power2.out',
+        duration: 0.45
+      });
+    }
+
+    // Bootstrap: first product visible
+    activate(0);
+
+    ScrollTrigger.create({
+      trigger: wrap,
+      start:   'top top',
+      end:     '+=' + (n * 90) + '%',
+      pin:     true,
+      scrub:   0.8,
+      onUpdate: function(self) {
+        var idx = Math.min(Math.floor(self.progress * n), n - 1);
+        activate(idx);
+      }
+    });
+  })();
 
 
   /* ─────────────────────────────────────────────
