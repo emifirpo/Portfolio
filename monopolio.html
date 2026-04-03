@@ -3292,34 +3292,37 @@
         .to(colRight, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
     }
 
-    // Split animation - entrance
+    // Split animation - entrance (demo5: scaleY from bottom)
     function animateSplitTitleIn(el) {
       if (typeof gsap === 'undefined') return;
       const chars = el.querySelectorAll('.char');
       if (!chars.length) return;
       gsap.fromTo(chars,
-        { opacity: 0, scale: 1.7 },
         {
-          duration: 0.6,
-          ease: 'power3.out',
-          opacity: 1,
-          scale: 1,
-          stagger: { each: 0.013, from: 'edges' }
+          willChange: 'transform',
+          transformOrigin: '50% 100%',
+          scaleY: 0
+        },
+        {
+          duration: 0.3,
+          ease: 'power4',
+          scaleY: 1,
+          stagger: { each: 0.015, from: 'start' }
         }
       );
     }
 
-    // Split animation - exit
+    // Split animation - exit (demo5: scaleY to top)
     function animateSplitTitleOut(el) {
       if (typeof gsap === 'undefined') return;
       const chars = el.querySelectorAll('.char');
       if (!chars.length) return;
       gsap.to(chars, {
-        duration: 0.45,
-        ease: 'power3.in',
-        opacity: 0,
-        scale: 0.5,
-        stagger: { each: 0.01, from: 'edges' }
+        duration: 0.3,
+        ease: 'sine.in',
+        transformOrigin: '50% 0%',
+        scaleY: 0,
+        stagger: { each: 0.02, from: 'start' }
       });
     }
 
