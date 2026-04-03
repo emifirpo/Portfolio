@@ -3299,14 +3299,16 @@
       if (!chars.length) return;
       gsap.fromTo(chars,
         {
-          willChange: 'transform',
+          willChange: 'transform, opacity',
           transformOrigin: '50% 100%',
-          scaleY: 0
+          scaleY: 0,
+          opacity: 0
         },
         {
           duration: 0.3,
           ease: 'power4',
           scaleY: 1,
+          opacity: 1,
           stagger: { each: 0.015, from: 'start' }
         }
       );
@@ -3322,6 +3324,7 @@
         ease: 'sine.in',
         transformOrigin: '50% 0%',
         scaleY: 0,
+        opacity: 0,
         stagger: { each: 0.02, from: 'start' }
       });
     }
