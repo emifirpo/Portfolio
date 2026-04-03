@@ -1761,7 +1761,7 @@
         <!-- Panel 01 · Buscador -->
         <div class="vtl-panel is-active" data-vtl-idx="0">
           <span class="vtl-num">01</span>
-          <span class="vtl-name">Buscador</span>
+          <span class="vtl-name split-title" data-splitting>Buscador</span>
           <span class="vtl-type">B2C · Motor de búsqueda</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
@@ -1774,7 +1774,7 @@
         <!-- Panel 02 · Desarrollos -->
         <div class="vtl-panel" data-vtl-idx="1">
           <span class="vtl-num">02</span>
-          <span class="vtl-name">Desarrollos</span>
+          <span class="vtl-name split-title" data-splitting>Desarrollos</span>
           <span class="vtl-type">B2C + B2B · Obra nueva</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
@@ -1787,7 +1787,7 @@
         <!-- Panel 03 · Asesores -->
         <div class="vtl-panel" data-vtl-idx="2">
           <span class="vtl-num">03</span>
-          <span class="vtl-name">Asesores</span>
+          <span class="vtl-name split-title" data-splitting>Asesores</span>
           <span class="vtl-type">B2B · CRM Inmobiliario</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
@@ -1800,7 +1800,7 @@
         <!-- Panel 04 · EDV -->
         <div class="vtl-panel" data-vtl-idx="3">
           <span class="vtl-num">04</span>
-          <span class="vtl-name">EDV</span>
+          <span class="vtl-name split-title" data-splitting>EDV</span>
           <span class="vtl-type">B2B · Estimación de valor</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
@@ -1813,7 +1813,7 @@
         <!-- Panel 05 · EDM -->
         <div class="vtl-panel" data-vtl-idx="4">
           <span class="vtl-num">05</span>
-          <span class="vtl-name">EDM</span>
+          <span class="vtl-name split-title" data-splitting>EDM</span>
           <span class="vtl-type">Data · Viabilidad estratégica</span>
           <div class="vtl-cycle">
             <span class="vtl-phase active">Estrategia</span>
@@ -3142,8 +3142,8 @@
     var cards  = document.querySelectorAll('#vtl .vtl-card');
     if (!cards.length) return;
 
-    // Split animation function
-    function animateSplitTitle(el) {
+    // Split animation - entrance
+    function animateSplitTitleIn(el) {
       if (typeof gsap === 'undefined') return;
       const chars = el.querySelectorAll('.char');
       if (!chars.length) return;
@@ -3159,9 +3159,35 @@
       );
     }
 
-    var currentIdx = 0;
+    // Split animation - exit
+    function animateSplitTitleOut(el) {
+      if (typeof gsap === 'undefined') return;
+      const chars = el.querySelectorAll('.char');
+      if (!chars.length) return;
+      gsap.to(chars, {
+        duration: 0.45,
+        ease: 'power3.in',
+        opacity: 0,
+        scale: 0.5,
+        stagger: { each: 0.01, from: 'edges' }
+      });
+    }
+
+    var currentIdx = -1;
     function activate(idx) {
       if (idx === currentIdx) return;
+
+      // Animate out previous title
+      if (currentIdx >= 0) {
+        var prevPanel = panels[currentIdx];
+        if (prevPanel) {
+          var prevTitle = prevPanel.querySelector('.vtl-name.split-title');
+          if (prevTitle) {
+            animateSplitTitleOut(prevTitle);
+          }
+        }
+      }
+
       currentIdx = idx;
       panels.forEach(function(p, i) {
         var isActive = i === idx;
@@ -3170,7 +3196,7 @@
           var titleEl = p.querySelector('.vtl-name.split-title');
           if (titleEl && typeof Splitting !== 'undefined') {
             Splitting({ target: titleEl });
-            animateSplitTitle(titleEl);
+            animateSplitTitleIn(titleEl);
           }
         }
       });
