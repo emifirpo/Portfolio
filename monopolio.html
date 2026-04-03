@@ -752,7 +752,7 @@
       height: 100vh;          /* viewport height (GSAP will pin & extend scroll) */
       display: grid;
       grid-template-columns: 1fr 80px 1fr;
-      background: #FFFFFF;
+      background: transparent;
       position: relative;
       overflow: hidden;
     }
@@ -865,7 +865,7 @@
       display: flex; flex-direction: column;
       padding: 48px max(48px, 5vw) 48px 40px;
       gap: 18px;
-      background: #FFFFFF; /* solid so it covers previous cards */
+      background: var(--bg);
       will-change: transform;
     }
     /* First card is immediately visible */
