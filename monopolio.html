@@ -3182,6 +3182,12 @@
         ease: 'power2.inOut'
       });
     }
+
+    // Reset: when timeline completes, reset all cards to their initial state
+    tl.call(function() {
+      gsap.set(cards, { y: '100%' });
+      gsap.set(cards[0], { y: '0%' });
+    });
   })();
 
 
