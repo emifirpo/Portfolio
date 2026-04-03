@@ -637,61 +637,62 @@
     /* Chips de audiencia en footer */
 
     /* ─── AUDIENCIAS ─── */
-    /* ─── AUDIENCE ROTARY GALLERY ─── */
+    /* ─── AUDIENCE CAROUSEL (Horizontal Scroll) ─── */
     .aud-rotary {
       width: 100%;
-      height: 560px;
+      height: auto;
       position: relative;
-      /* X: visible — body overflow-x:clip handles sides.
-         Y: clip — stops cards bleeding into the next section.
-         top offset on .aud-center absorbs the 35% upward scale growth. */
-      overflow-x: visible;
-      overflow-y: clip;
+      overflow: hidden;
       margin-top: 0;
+      padding: 40px 0;
     }
     .aud-center {
-      height: 100%;
-      position: absolute;
-      left: 50%;
-      top: 26%;
-      transform: translateX(-50%);
+      width: 100%;
+      position: relative;
       user-select: none;
     }
     .aud-items {
-      transform-origin: center 820px;
-      transform: rotate(0deg);
-      user-select: none;
       display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      padding: 0 max(40px, 5vw);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .aud-items::-webkit-scrollbar {
+      display: none;
     }
     .aud-item {
-      position: absolute;
+      position: relative;
+      flex: 0 0 auto;
+      width: 280px;
       user-select: none;
       cursor: grab;
-      transform: translateX(-50%);
     }
     .aud-item:active { cursor: grabbing; }
     .aud-card {
-      display: block;
-      width: 224px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
       background: #FFFFFF;
       border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
       padding: 0;
       cursor: grab;
       position: relative;
       z-index: 1;
       box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04);
-      transform-origin: center bottom;
-      transition: transform .4s cubic-bezier(.16,1,.3,1),
-                  box-shadow .4s cubic-bezier(.16,1,.3,1);
+      transition: transform .3s cubic-bezier(.16,1,.3,1),
+                  box-shadow .3s cubic-bezier(.16,1,.3,1);
+      height: 100%;
     }
     .aud-card:hover {
-      transform: scale(1.35);
-      box-shadow: 0 32px 80px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.1);
-      z-index: 20;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
     }
-    /* No orange line on hover — removed ::before */
     .aud-illustration video.aud-hover-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
@@ -704,15 +705,16 @@
     .aud-illustration { position: relative; }
     .aud-card:hover .aud-illustration video.aud-hover-video { opacity: 1; }
     .aud-card:hover .aud-illustration svg { opacity: 0; transition: opacity .3s; }
-    /* Illustration area — fills top of card */
+    /* Illustration area — visual placeholder */
     .aud-illustration {
       width: 100%;
-      aspect-ratio: 4/3;
-      background: #F4F3F0;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(76,92,45,0.08) 0%, rgba(76,92,45,0.02) 100%);
       overflow: hidden;
       display: flex; align-items: center; justify-content: center;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
     }
-    .aud-illustration svg { width: 90%; height: auto; display: block; }
+    .aud-illustration svg { width: 80%; height: auto; display: block; }
     .aud-card-body {
       padding: 16px 18px 20px;
     }
@@ -3380,68 +3382,54 @@
 
 
   /* ─────────────────────────────────────────────
-     AUDIENCE ROTARY GALLERY
-     Adapted from interactive-image-gallery
-     (Hyundai / @deadrabbbbit inspiration)
-     Uses GSAP + Draggable for rotary carousel
+     AUDIENCE CAROUSEL — Horizontal Scroll with Drag
+     Minimal, smooth horizontal carousel with native scroll
   ───────────────────────────────────────────── */
-  (function initAudRotary() {
-    const items = gsap.utils.toArray('#audItems .aud-item');
-    if (!items.length || typeof Draggable === 'undefined') return;
+  (function initAudCarousel() {
+    const carousel = document.querySelector('#audItems');
+    if (!carousel) return;
 
-    const total  = items.length;          // 18 (6 unique × 3)
-    const degree = 360 / total;           // 20° per step — ~56px gap at r=820px
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-    /* ── Entrance: stagger fly-in from sides, then settle into wheel ── */
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
-    const uniqueCount = 6; // Only animate the first 6; rest start in position silently
+    carousel.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - carousel.offsetLeft;
+      scrollLeft = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      carousel.style.cursor = 'grabbing';
+    });
 
-    items.forEach((item, i) => {
-      if (i < uniqueCount) {
-        const sign    = Math.floor((i / 2) % 2) ? 1 : -1;
-        const value   = Math.floor((i + 4) / 4) * 4;
-        const initRot = i > uniqueCount - 3 ? 0 : sign * value;
-        gsap.set(item, { rotation: initRot, scale: 0.6 });
+    carousel.addEventListener('mouseleave', () => {
+      isDown = false;
+      carousel.style.scrollBehavior = 'smooth';
+      carousel.style.cursor = 'grab';
+    });
 
-        tl.from(item, {
-          x: () => i % 2
-            ? window.innerWidth + item.clientWidth * 3
-            : -window.innerWidth - item.clientWidth * 3,
-          y: () => window.innerHeight * 0.6,
-          rotation: i % 2 ? 160 : -160,
-          scale: 3,
-          opacity: 1,
-          delay: 0.1 * Math.floor(i / 2),
-        }, 0);
-      } else {
-        // Hidden copies: set directly to their rotary position, no animation
-        gsap.set(item, { scale: 0.6 });
+    carousel.addEventListener('mouseup', () => {
+      isDown = false;
+      carousel.style.scrollBehavior = 'smooth';
+      carousel.style.cursor = 'grab';
+    });
+
+    carousel.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - carousel.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      carousel.scrollLeft = scrollLeft - walk;
+    });
+
+    // Fade edges with subtle gradient
+    const style = document.createElement('style');
+    style.textContent = `
+      #audItems {
+        mask-image: linear-gradient(to right, transparent 0%, black 40px, black calc(100% - 40px), transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40px, black calc(100% - 40px), transparent 100%);
       }
-
-      const settleMark = 0.1 * (uniqueCount / 2 - 1) + 1;
-      tl.to(item, { scale: 1, duration: 0 }, settleMark);
-
-      const rotAngle = i * degree;
-      tl.to(item, {
-        transformOrigin: 'center 820px',
-        rotation: i > total / 2 ? -degree * (total - i) : rotAngle,
-        duration: 1,
-        ease: 'power1.out',
-      }, settleMark);
-    });
-
-    /* ── Draggable: rotation with snap to nearest 20° on release ── */
-    Draggable.create('#audItems', {
-      type: 'rotation',
-      onDragEnd: function () {
-        const nearest = Math.round(this.rotation / degree) * degree;
-        gsap.to('#audItems', {
-          rotation: nearest,
-          duration: 0.55,
-          ease: 'power3.out',
-        });
-      },
-    });
+    `;
+    document.head.appendChild(style);
   })();
 
 
