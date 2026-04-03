@@ -741,20 +741,20 @@
 
     /* ─── STACK UNIFICADO ─── */
 
-    /* ══ VERTICAL TIMELINE — GSAP pin + right stacking ══
-       Pattern: texto fixed izquierda, imagen apila derecha
+    /* ══ VERTICAL TIMELINE — Sticky left + scrollable right ══
+       Pattern: texto sticky izquierda, cards scrollean derecha
     ══════════════════════════════════════════════════════ */
 
-    /* Pinned container — breaks out of section padding, full-bleed */
+    /* Container — natural height, cards stack vertically */
     .vtl {
       margin-left:  calc(-1 * max(40px, calc((100% - var(--mw)) / 2)));
       margin-right: calc(-1 * max(40px, calc((100% - var(--mw)) / 2)));
-      height: 100vh;          /* viewport height (GSAP will pin & extend scroll) */
+      height: auto;
       display: grid;
       grid-template-columns: 1fr 80px 1fr;
       background: transparent;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
 
     /* Center spine line */
@@ -767,9 +767,12 @@
       pointer-events: none;
     }
 
-    /* ── LEFT COLUMN — fixed, text panels stack absolutely ── */
+    /* ── LEFT COLUMN — sticky, text panels stack absolutely ── */
     .vtl-col-left {
-      position: relative;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      align-self: start;
       display: flex; align-items: center; justify-content: flex-end;
       padding: 64px 40px 64px max(48px, 5vw);
       z-index: 2;
@@ -830,7 +833,11 @@
     /* ── CENTER COLUMN — single node on the spine ── */
     .vtl-col-center {
       display: flex; align-items: center; justify-content: center;
-      position: relative; z-index: 3;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      align-self: start;
+      z-index: 3;
     }
     .vtl-node-circle {
       width: 54px; height: 54px;
@@ -850,26 +857,24 @@
     }
     .vtl-node-glyph.is-active { opacity: 1; }
 
-    /* ── RIGHT COLUMN — cards stack from bottom ── */
+    /* ── RIGHT COLUMN — cards scroll vertically ── */
     .vtl-col-right {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       z-index: 1;
     }
 
-    /* Each card fills the right column absolutely, starts BELOW viewport */
+    /* Each card scrolls vertically, full viewport height */
     .vtl-card {
-      position: absolute;
-      inset: 0;
-      transform: translateY(100%);
+      position: relative;
+      inset: auto;
+      height: 100vh;
       display: flex; flex-direction: column;
       padding: 48px max(48px, 5vw) 48px 40px;
       gap: 18px;
       background: transparent;
-      will-change: transform;
+      will-change: unset;
     }
-    /* First card is immediately visible */
-    .vtl-card:first-child { transform: translateY(0); }
 
     /* Image fills most of the card height */
     .vtl-img {
@@ -3120,30 +3125,17 @@
 
   /* ─────────────────────────────────────────────
      VERTICAL TIMELINE
-     Pattern: GSAP pin · texto fixed · derecha apila
-     - Sección pinneada por (n * 100vh) de scroll
-     - LEFT: paneles de texto superpuestos, solo el activo visible
-     - CENTER: nodo único, cambia de glifo según producto activo
-     - RIGHT: cards absolutas que transicionan de translateY(100%)
-               a translateY(0) una por una conforme avanza el scroll
+     Pattern: Sticky left + scrollable right
+     - LEFT: paneles de texto sticky (uno activo a la vez)
+     - CENTER: nodo único sticky, cambia de glifo según card visible
+     - RIGHT: cards scrollean verticalmente, cada una = 100vh
   ───────────────────────────────────────────── */
   (function initVtl() {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    var panels = document.querySelectorAll('#vtl .vtl-panel');
+    var glyphs = document.querySelectorAll('#vtl .vtl-node-glyph');
+    var cards  = document.querySelectorAll('#vtl .vtl-card');
+    if (!cards.length) return;
 
-    var wrap    = document.getElementById('vtl');
-    var panels  = gsap.utils.toArray('#vtl .vtl-panel');
-    var glyphs  = gsap.utils.toArray('#vtl .vtl-node-glyph');
-    var cards   = gsap.utils.toArray('#vtl .vtl-card');
-    var n       = cards.length; // 5
-
-    if (!wrap || !n) return;
-
-    // ── Initial state ──
-    // Card 0 is already visible (translateY: 0 via CSS :first-child rule)
-    // Cards 1-4 start below the fold
-    gsap.set(cards.slice(1), { y: '100%' });
-
-    // ── Panel/glyph switch helper ──
     var currentIdx = 0;
     function activate(idx) {
       if (idx === currentIdx) return;
@@ -3152,42 +3144,17 @@
       glyphs.forEach(function(g, i) { g.classList.toggle('is-active', i === idx); });
     }
 
-    // ── Build the GSAP timeline ──
-    // One "segment" per product. Segment 0: hold (card 0 visible).
-    // Segments 1–4: each card slides up from translateY(100%) to 0.
-    var tl = gsap.timeline({
-      scrollTrigger: {
-        trigger:      wrap,
-        start:        'top top',
-        end:          '+=' + (n * 100) + 'vh',
-        pin:          true,
-        anticipatePin: 1,
-        scrub:        1,
-        onUpdate: function(self) {
-          // Switch panel/glyph at each 1/n boundary
-          var idx = Math.min(Math.floor(self.progress * n), n - 1);
+    // Detect which card is in viewport using IntersectionObserver
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var idx = parseInt(entry.target.dataset.vtlIdx, 10);
           activate(idx);
         }
-      }
-    });
-
-    // Segment 0: empty hold (card 0 is already in place, nothing to animate)
-    tl.to({}, { duration: 1 });
-
-    // Segments 1–4: slide each subsequent card up
-    for (var i = 1; i < n; i++) {
-      tl.to(cards[i], {
-        y: '0%',
-        duration: 1,
-        ease: 'power2.inOut'
       });
-    }
+    }, { threshold: 0.5, rootMargin: '-10% 0px -10% 0px' });
 
-    // Reset: when timeline completes, reset all cards to their initial state
-    tl.call(function() {
-      gsap.set(cards, { y: '100%' });
-      gsap.set(cards[0], { y: '0%' });
-    });
+    cards.forEach(function(card) { observer.observe(card); });
   })();
 
 
