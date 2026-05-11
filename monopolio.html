@@ -499,8 +499,52 @@
     }
     .meta-value.ac { color: var(--accent); }
 
+    /* ─── BRAND CAROUSEL (monopolio) ─── */
+    .mono-brand-carousel-wrap {
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+    }
+    .mono-brand-carousel-wrap.is-dragging { cursor: grabbing; }
+    .mono-brand-carousel-track {
+      display: flex;
+      gap: 20px;
+      padding: 0 max(40px, calc((100% - 1320px) / 2));
+      will-change: transform;
+    }
+    .mono-brand-item-wrap { flex-shrink: 0; display: flex; flex-direction: column; }
+    .mono-brand-item {
+      height: 360px;
+      width: fit-content;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111;
+      transition: box-shadow .35s cubic-bezier(.16,1,.3,1);
+    }
+    .mono-brand-item-wrap:hover .mono-brand-item {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .mono-brand-item img {
+      height: 100%;
+      width: auto;
+      display: block;
+      object-fit: unset;
+    }
+    .mono-brand-item-label {
+      margin-top: 14px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(240,237,232,0.28);
+    }
+    .mono-brand-item-sub {
+      font-size: 12px;
+      color: rgba(240,237,232,0.14);
+      margin-top: 4px;
+    }
+
     /* ─── SECTION COMMONS ─── */
-    .sec { padding: 120px max(40px, calc((100% - var(--mw)) / 2)); overflow: visible; }
+    .sec { padding: 80px max(40px, calc((100% - var(--mw)) / 2)); overflow: visible; }
     .sec.alt  { background: transparent; }
     .sec.alt2 { background: var(--bg3); }
 
@@ -636,107 +680,130 @@
 
     /* Chips de audiencia en footer */
 
-    /* ─── AUDIENCIAS ─── */
-    /* ─── AUDIENCE ROTARY GALLERY ─── */
-    .aud-rotary {
+    /* ─── AUDIENCIAS 3D CAROUSEL ─── */
+    .aud-clip-wrap {
+      width: 100%;
+      -webkit-mask-image: linear-gradient(to right,
+        transparent 0px,
+        black 80px,
+        black calc(100% - 80px),
+        transparent 100%
+      );
+      mask-image: linear-gradient(to right,
+        transparent 0px,
+        black 80px,
+        black calc(100% - 80px),
+        transparent 100%
+      );
+    }
+    .aud-stage {
+      position: relative;
       width: 100%;
       height: 560px;
-      position: relative;
-      /* X: visible — body overflow-x:clip handles sides.
-         Y: clip — stops cards bleeding into the next section.
-         top offset on .aud-center absorbs the 35% upward scale growth. */
-      overflow-x: visible;
-      overflow-y: clip;
+      overflow: visible; /* las tarjetas laterales no se cortan */
+      perspective: 1800px;
+      cursor: grab;
+      touch-action: none;
       margin-top: 0;
+      -webkit-user-select: none;
+      user-select: none;
     }
-    .aud-center {
-      height: 100%;
+    .aud-stage.aud-dragging { cursor: grabbing; }
+    /* Canvas de gradiente oculto — fondo limpio de la sección */
+    .aud-bg {
+      display: none;
+    }
+    .aud-cards-3d {
       position: absolute;
+      inset: 0;
+      z-index: 10;
+      transform-style: preserve-3d;
+    }
+    .aud-card-3d {
+      position: absolute;
+      top: 50%;
       left: 50%;
-      top: 26%;
-      transform: translateX(-50%);
+      width: min(23vw, 270px);
+      aspect-ratio: 5/7;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      will-change: transform, filter;
+      -webkit-user-drag: none;
       user-select: none;
     }
-    .aud-items {
-      transform-origin: center 820px;
-      transform: rotate(0deg);
-      user-select: none;
-      display: flex;
-    }
-    .aud-item {
-      position: absolute;
-      user-select: none;
-      cursor: grab;
-      transform: translateX(-50%);
-    }
-    .aud-item:active { cursor: grabbing; }
-    .aud-card {
-      display: block;
-      width: 224px;
-      background: #FFFFFF;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 18px;
-      overflow: hidden;
-      padding: 0;
-      cursor: grab;
+    /* Card principal — full-bleed, gradiente de fondo por audiencia */
+    .aud-card-inner {
       position: relative;
-      z-index: 1;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04);
-      transform-origin: center bottom;
-      transition: transform .4s cubic-bezier(.16,1,.3,1),
-                  box-shadow .4s cubic-bezier(.16,1,.3,1);
-    }
-    .aud-card:hover {
-      transform: scale(1.35);
-      box-shadow: 0 32px 80px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.1);
-      z-index: 20;
-    }
-    /* No orange line on hover — removed ::before */
-    .aud-illustration video.aud-hover-video {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .3s;
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      /* background gradient inyectado por JS */
+      box-shadow: 0 20px 56px rgba(0,0,0,0.28), 0 4px 12px rgba(0,0,0,0.14);
       pointer-events: none;
-      border-radius: 0;
     }
-    .aud-illustration { position: relative; }
-    .aud-card:hover .aud-illustration video.aud-hover-video { opacity: 1; }
-    .aud-card:hover .aud-illustration svg { opacity: 0; transition: opacity .3s; }
-    /* Illustration area — fills top of card */
-    .aud-illustration {
-      width: 100%;
-      aspect-ratio: 4/3;
-      background: #F4F3F0;
-      overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+    /* Figura del usuario — llena toda la card, protagonista visual */
+    .aud-card-svg-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 72px; /* espacio para que el texto respire abajo */
     }
-    .aud-illustration svg { width: 90%; height: auto; display: block; }
-    .aud-card-body {
-      padding: 16px 18px 20px;
+    .aud-card-svg-wrap svg {
+      width: 138%; /* sobrepasa el borde — se clipa con overflow:hidden */
+      height: auto;
+      display: block;
+      flex-shrink: 0;
+      filter: brightness(0) invert(1);
+      opacity: 0.88;
     }
-    .aud-type {
-      font-size: 9px; font-weight: 700;
-      color: rgba(17,17,17,0.4); letter-spacing: .14em; text-transform: uppercase;
-      margin-bottom: 8px;
+    /* Scrim — gradiente oscuro sobre la figura para legibilidad */
+    .aud-card-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0)    28%,
+        rgba(0,0,0,0.78) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
     }
-    .aud-headline {
-      font-size: 15px; font-weight: 700;
-      color: #111111; letter-spacing: -.2px; line-height: 1.3;
+    /* Texto overlay directo sobre el gradiente */
+    .aud-card-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0 18px 22px;
+      z-index: 2;
     }
-    /* Illustration area */
-    .aud-illustration {
-      width: 100%;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(26,26,26,0.028);
+    .aud-card-type {
+      display: block;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 7px;
     }
-
-    .aud-illustration svg { width: 100%; height: auto; display: block; }
-
-
+    .aud-card-headline {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+      line-height: 1.22;
+    }
+    @media (max-width: 768px) {
+      .aud-stage { height: 440px; }
+      .aud-card-3d { width: min(58vw, 220px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .aud-card-3d { transition: none !important; animation: none !important; }
+    }
 
 
     /* ─── STACK UNIFICADO ─── */
@@ -776,6 +843,8 @@
       display: flex; align-items: center; justify-content: flex-end;
       padding: 64px 40px 64px max(48px, 5vw);
       z-index: 2;
+      opacity: 0;
+      transform: translateX(-60px);
     }
 
     /* Each text panel sits absolutely centered, all initially hidden */
@@ -803,8 +872,8 @@
     }
     .vtl-name {
       display: block;
-      font-size: clamp(40px, 5vw, 66px);
-      font-weight: 700; letter-spacing: -2.5px; line-height: 0.95;
+      font-size: clamp(48px, 6.5vw, 96px);
+      font-weight: 700; letter-spacing: -3.5px; line-height: 0.92;
       color: #0F0F0F; margin-bottom: 16px;
     }
     .vtl-type {
@@ -838,6 +907,8 @@
       height: 100vh;
       align-self: start;
       z-index: 3;
+      opacity: 0;
+      transform: scale(0.8);
     }
     .vtl-node-circle {
       width: 54px; height: 54px;
@@ -862,6 +933,8 @@
       position: relative;
       overflow: visible;
       z-index: 1;
+      opacity: 0;
+      transform: translateX(60px);
     }
 
     /* Each card scrolls vertically, full viewport height */
@@ -870,21 +943,23 @@
       inset: auto;
       height: 100vh;
       display: flex; flex-direction: column;
-      padding: 48px max(48px, 5vw) 48px 40px;
-      gap: 18px;
+      justify-content: center;
+      padding: 0;
+      gap: 0;
       background: transparent;
       will-change: unset;
       opacity: 0;
-      transition: opacity 0.6s cubic-bezier(.16,1,.3,1);
+      transition: opacity 0.5s cubic-bezier(.16,1,.3,1);
     }
     .vtl-card.is-visible { opacity: 1; }
 
-    /* Image fills most of the card height */
+    /* Image fills the card — edge-to-edge, no floating frame */
     .vtl-img {
       flex: 1; min-height: 0;
-      border-radius: 12px;
+      border-radius: 0;
       background: rgba(15,15,15,0.04);
-      border: 1px solid rgba(15,15,15,0.07);
+      border: none;
+      border-bottom: 1px solid rgba(15,15,15,0.06);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
@@ -894,10 +969,11 @@
       color: rgba(15,15,15,0.2);
     }
 
-    /* Info row below image */
+    /* Info row below image — has its own padding */
     .vtl-info {
       flex-shrink: 0;
       display: flex; flex-direction: column; gap: 6px;
+      padding: 20px max(48px, 5vw) 28px 40px;
     }
     .vtl-kicker {
       font-size: 9px; font-weight: 700;
@@ -916,26 +992,89 @@
       border-radius: 4px; padding: 3px 9px;
     }
 
-    /* Mobile: revert to vertical scroll, no pin */
+    /* ── VTL MEDIA TABS ── */
+    .vtl-media-wrap { display: flex; flex-direction: column; gap: 10px; padding: 0 max(48px,5vw) 0 40px; }
+    .vtl-tabs {
+      display: flex; gap: 3px;
+      align-self: flex-start;
+    }
+    .vtl-tab {
+      font-size: 10px; font-weight: 650;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px;
+      border: 1px solid rgba(15,15,15,0.11);
+      background: transparent;
+      color: rgba(15,15,15,0.38);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      font-family: inherit;
+    }
+    .vtl-tab:hover { color: rgba(15,15,15,0.7); border-color: rgba(15,15,15,0.22); }
+    .vtl-tab.is-active {
+      background: #0F0F0F; border-color: #0F0F0F; color: #FFFFFF;
+    }
+    .vtl-media-panel {
+      display: none;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .vtl-media-panel.is-active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .vtl-media-panel.is-entering {
+      animation: vtl-panel-in 0.35s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    @keyframes vtl-panel-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .vtl-media-panel.is-leaving {
+      display: block;
+      animation: vtl-panel-out 0.18s ease forwards;
+    }
+    @keyframes vtl-panel-out {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-4px); }
+    }
+    .vtl-lottie-app { width: 100%; }
+
+    /* Mobile: simple vertical layout, no animations */
     @media (max-width: 860px) {
       .vtl {
         height: auto; overflow: visible;
         grid-template-columns: 1fr;
         margin: 0;
+        opacity: 1 !important;
+        transform: none !important;
       }
       .vtl::before { display: none; }
       .vtl-col-left { display: none; }
       .vtl-col-center { display: none; }
-      .vtl-col-right { position: static; height: auto; overflow: visible; }
+      .vtl-col-right {
+        position: static; height: auto; overflow: visible;
+        opacity: 1 !important;
+        transform: none !important;
+      }
       .vtl-card {
         position: relative; inset: auto;
         transform: none !important;
-        margin-bottom: 32px;
-        padding: 32px 24px;
+        height: auto;
+        margin-bottom: 36px;
+        padding: 0;
         border: 1px solid rgba(15,15,15,0.07);
-        border-radius: 16px;
+        border-radius: 12px;
+        overflow: hidden;
+        opacity: 1;
       }
-      .vtl-img { min-height: 220px; flex: none; }
+      .vtl-img { min-height: 200px; flex: none; border-radius: 0; }
+      .vtl-info { padding: 18px 20px 22px; }
+      .vtl-num { margin-bottom: 16px; }
+      .vtl-name { font-size: clamp(24px, 6vw, 32px); margin-bottom: 12px; }
+      .vtl-type { font-size: 12px; margin-bottom: 16px; }
+      .vtl-cycle { gap: 6px; }
+      .vtl-phase { font-size: 9px; padding: 3px 8px; }
     }
 
     /* Arquitectura del ecosistema */
@@ -1049,6 +1188,9 @@
       visibility: hidden;
       box-shadow: 0 28px 64px rgba(0,0,0,0.72), 0 0 0 1px rgba(255,255,255,0.08);
     }
+
+    /* ─── ECOSISTEMA ─── */
+    .eco-header { max-width: 700px; margin: 0 auto 64px; text-align: center; }
 
     /* ─── APORTE ─── */
     .aporte-header { max-width: 700px; margin-bottom: 64px; }
@@ -1180,27 +1322,27 @@
       margin-bottom: 72px;
     }
 
-    /* Scroll anchor: tall container cuya altura = 100vh + distancia de scroll horizontal.
-       Establecida por JS. Provee el espacio vertical que se mapea a movimiento horizontal. */
     .gallery-scroll-anchor { position: relative; }
 
-    /* Sticky wrapper: se fija al top del viewport mientras el usuario scrollea dentro del anchor */
     .gallery__wrapper {
-      position: sticky; top: 0; z-index: 1;
-      height: 100vh; overflow: hidden;
-      display: flex; flex-direction: column;
-      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
       user-select: none;
+      padding: 60px 0 40px;
     }
+    .gallery__wrapper.is-dragging { cursor: grabbing; }
+
     .gallery__image__container {
       display: flex; gap: 24px;
-      will-change: transform;
       padding: 0 max(40px, calc((100% - var(--mw)) / 2));
+      padding-right: 40px;
+      will-change: transform;
     }
     .gallery__media-wrap { flex-shrink: 0; display: flex; flex-direction: column; }
     .gallery__media {
-      aspect-ratio: 16 / 10;
-      width: 54vw; max-width: 900px; min-width: 300px;
+      height: 460px;
+      width: fit-content;
       overflow: hidden; position: relative;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.08);
@@ -1234,12 +1376,29 @@
       font-family: var(--f); letter-spacing: 0.02em;
     }
     .gallery__media__item {
-      position: absolute; top: 0;
-      left: -12.5%; width: 125%; height: 100%;
-      object-fit: cover; display: block;
-      will-change: transform;
+      display: block;
+      width: auto;
+      height: calc(100% - 34px);
+      margin-top: 34px;
+      object-fit: unset;
       background: #0D0F14;
     }
+    /* Mobile variant — no browser chrome, sin fondo */
+    .gallery__media--mobile {
+      display: block;
+      width: auto;
+      min-width: unset;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .gallery__media__item--mobile {
+      display: block;
+      width: auto;
+      height: 460px;
+      object-fit: unset;
+    }
+
     .gallery__media-label {
       margin-top: 16px;
       font-size: 11px; font-weight: 700;
@@ -1271,7 +1430,7 @@
     }
     @media (max-width: 768px) {
       #showcase { padding-top: 80px; }
-      .gallery__media { width: 80vw; }
+      .gallery__media { width: 80vw; height: 280px; }
     }
 
     /* ─── CTA ─── */
@@ -1411,11 +1570,9 @@
 
       /* 4. Showcase → galería simple (no carousel) */
       #showcase { overflow: visible; position: static; }
-      .gallery-scroll-anchor { position: static; height: auto !important; }
+      .gallery-scroll-anchor { position: static; }
       .gallery__wrapper {
-        position: static !important;
-        height: auto !important;
-        padding: 0 !important;
+        padding: 40px 0 !important;
         margin-bottom: 60px;
       }
       .gallery__image__container {
@@ -1771,7 +1928,7 @@
         <!-- Panel 02 · Desarrollos -->
         <div class="vtl-panel" data-vtl-idx="1">
           <span class="vtl-num">02</span>
-          <span class="vtl-name">Desarrollos</span>
+          <span class="vtl-name split-title" data-splitting>Desarrollos</span>
           <span class="vtl-type">B2C + B2B · Obra nueva</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
@@ -1784,7 +1941,7 @@
         <!-- Panel 03 · Asesores -->
         <div class="vtl-panel" data-vtl-idx="2">
           <span class="vtl-num">03</span>
-          <span class="vtl-name">Asesores</span>
+          <span class="vtl-name split-title" data-splitting>Asesores</span>
           <span class="vtl-type">B2B · CRM Inmobiliario</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
@@ -1797,8 +1954,8 @@
         <!-- Panel 04 · EDV -->
         <div class="vtl-panel" data-vtl-idx="3">
           <span class="vtl-num">04</span>
-          <span class="vtl-name">EDV</span>
-          <span class="vtl-type">B2B · Estimación de valor</span>
+          <span class="vtl-name split-title" data-splitting>Estimación de valor</span>
+          <span class="vtl-type">B2B</span>
           <div class="vtl-cycle">
             <span class="vtl-phase">Estrategia</span>
             <span class="vtl-phase">Descubrir</span>
@@ -1810,7 +1967,7 @@
         <!-- Panel 05 · EDM -->
         <div class="vtl-panel" data-vtl-idx="4">
           <span class="vtl-num">05</span>
-          <span class="vtl-name">EDM</span>
+          <span class="vtl-name split-title" data-splitting>Estudios de mercado</span>
           <span class="vtl-type">Data · Viabilidad estratégica</span>
           <div class="vtl-cycle">
             <span class="vtl-phase active">Estrategia</span>
@@ -1838,8 +1995,30 @@
 
         <!-- Card 01 · Buscador — starts visible (translateY: 0) -->
         <div class="vtl-card" data-vtl-idx="0">
-          <div class="vtl-img">
-            <span class="vtl-img-label">Visual próximamente</span>
+          <div class="vtl-media-wrap">
+            <!-- Tabs -->
+            <div class="vtl-tabs" id="buscador-tabs">
+              <button class="vtl-tab is-active" data-panel="buscador-web">Web</button>
+              <button class="vtl-tab" data-panel="buscador-app">App</button>
+            </div>
+            <!-- Panel Web -->
+            <div class="vtl-media-panel is-active" id="buscador-web">
+              <div style="overflow:hidden;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
+                <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+                  <source src="monopolio-cover.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <!-- Panel App -->
+            <div class="vtl-media-panel" id="buscador-app">
+              <div style="display:flex;justify-content:center;border-radius:16px;border:1px solid rgba(15,15,15,0.08);padding:20px 0;">
+                <div style="width:min(220px,52%);overflow:hidden;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+                  <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+                    <source src="buscador-app.mov" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="vtl-info">
             <div class="vtl-kicker">Monopolio Buscador</div>
@@ -1855,7 +2034,19 @@
         <!-- Card 02 · Desarrollos — starts below (translateY: 100%) -->
         <div class="vtl-card" data-vtl-idx="1">
           <div class="vtl-img">
-            <span class="vtl-img-label">Visual próximamente</span>
+            <svg viewBox="0 0 400 300" style="width:100%; height:100%;">
+              <rect width="400" height="300" fill="rgba(240,237,232,0.3)" rx="12"/>
+              <line x1="50" y1="50" x2="350" y2="50" stroke="rgba(15,15,15,0.1)" stroke-width="1"/>
+              <line x1="150" y1="50" x2="150" y2="250" stroke="rgba(15,15,15,0.1)" stroke-width="1"/>
+              <line x1="250" y1="50" x2="250" y2="250" stroke="rgba(15,15,15,0.1)" stroke-width="1"/>
+              <rect x="60" y="60" width="80" height="80" fill="none" stroke="rgba(76,92,45,0.4)" stroke-width="1.5"/>
+              <rect x="160" y="60" width="80" height="80" fill="none" stroke="rgba(76,92,45,0.3)" stroke-width="1.5"/>
+              <rect x="260" y="60" width="80" height="80" fill="none" stroke="rgba(76,92,45,0.2)" stroke-width="1.5"/>
+              <rect x="60" y="160" width="80" height="80" fill="rgba(76,92,45,0.08)"/>
+              <rect x="160" y="160" width="80" height="80" fill="rgba(76,92,45,0.12)"/>
+              <rect x="260" y="160" width="80" height="80" fill="rgba(76,92,45,0.06)"/>
+              <line x1="50" y1="260" x2="350" y2="260" stroke="rgba(15,15,15,0.15)" stroke-width="2"/>
+            </svg>
           </div>
           <div class="vtl-info">
             <div class="vtl-kicker">Monopolio Desarrollos</div>
@@ -1870,8 +2061,10 @@
 
         <!-- Card 03 · Asesores -->
         <div class="vtl-card" data-vtl-idx="2">
-          <div class="vtl-img">
-            <span class="vtl-img-label">Visual próximamente</span>
+          <div class="vtl-img" style="flex:none;height:auto;overflow:hidden;background:transparent;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
+            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+              <source src="asesores-cover.mov" type="video/mp4">
+            </video>
           </div>
           <div class="vtl-info">
             <div class="vtl-kicker">Monopolio Asesores</div>
@@ -1885,11 +2078,13 @@
 
         <!-- Card 04 · EDV -->
         <div class="vtl-card" data-vtl-idx="3">
-          <div class="vtl-img">
-            <span class="vtl-img-label">Visual próximamente</span>
+          <div class="vtl-img" style="flex:none;height:auto;overflow:hidden;background:transparent;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
+            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+              <source src="edv-cover.mov" type="video/mp4">
+            </video>
           </div>
           <div class="vtl-info">
-            <div class="vtl-kicker">EDV — Estimador de Valor</div>
+            <div class="vtl-kicker">Estimación de valor</div>
             <p class="vtl-desc">Flujos, reportes y modelos de presentación para estimar el valor de propiedades. UX claros para asesores, valuadores y propietarios.</p>
             <div class="vtl-chips">
               <span class="vtl-chip">Asesores</span>
@@ -1901,11 +2096,13 @@
 
         <!-- Card 05 · EDM -->
         <div class="vtl-card" data-vtl-idx="4">
-          <div class="vtl-img">
-            <span class="vtl-img-label">Visual próximamente</span>
+          <div class="vtl-img" style="flex:none;height:auto;overflow:hidden;background:transparent;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
+            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+              <source src="edm-cover.mov" type="video/mp4">
+            </video>
           </div>
           <div class="vtl-info">
-            <div class="vtl-kicker">EDM — Estimador de Mercado</div>
+            <div class="vtl-kicker">Estudios de mercado</div>
             <p class="vtl-desc">Análisis de viabilidad territorial, tendencias de precio y lectura de demanda. Entra al ciclo antes que cualquier otro producto: cuando todavía es una oportunidad sobre un mapa.</p>
             <div class="vtl-chips">
               <span class="vtl-chip">Desarrolladores</span>
@@ -1931,540 +2128,12 @@
       <h2 class="s-title split-title r d1" data-splitting>Distintos usuarios,<br /><i>una plataforma.</i></h2>
       <p class="s-body split-title r d2" data-splitting style="margin-top:14px">Monopolio atiende a perfiles muy distintos con necesidades específicas. Diseñar para todos ellos requirió comprensión profunda de cada contexto.</p>
     </div>
-    <div class="aud-rotary" id="audRotary">
-    <div class="aud-center">
-    <div class="aud-items" id="audItems">
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Mercado%20(1).mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="52" cy="40" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M37 35 Q52 22 67 35" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M52 56 L52 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M36 68 L52 60 L68 68" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M68 68 L88 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M36 68 L30 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 96 L42 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 96 L62 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="140" cy="82" r="40" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="2.2"/>
-            <circle cx="140" cy="82" r="28" stroke="#4C5C2D" stroke-width="1.2" stroke-dasharray="3,4" opacity="0.4"/>
-            <path d="M162 106 L183 130" stroke="#4C5C2D" stroke-width="3.2" stroke-linecap="round"/>
-            <path d="M127 86 L140 72 L153 86" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.45"/>
-            <rect x="131" y="86" width="18" height="14" rx="1" stroke="#1A1A1A" stroke-width="1.2" opacity="0.35"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Motor de búsqueda</div>
-            <div class="aud-headline">Buscando un hogar, inversionista, asesor, valuador</div>
-          </div>
-        </div>
+    <div class="aud-clip-wrap">
+      <div class="aud-stage" id="audStage">
+        <canvas class="aud-bg" id="audBg" aria-hidden="true"></canvas>
+        <div class="aud-cards-3d" id="audCards3d" aria-label="Carousel de audiencias del ecosistema"></div>
       </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Info-de-zona.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="76" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M61 30 Q76 18 91 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M76 52 L76 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M76 54 L70 60 L76 68 L82 60 Z" stroke="#1A1A1A" stroke-width="1.2" stroke-linejoin="round" opacity="0.35"/>
-            <path d="M58 64 L76 56 L94 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M94 64 L120 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 64 L52 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M76 94 L65 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M76 94 L87 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="138" cy="88" r="18" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="2.2"/>
-            <circle cx="138" cy="88" r="9" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M150 100 L170 122" stroke="#4C5C2D" stroke-width="2.8" stroke-linecap="round"/>
-            <line x1="158" y1="114" x2="163" y2="109" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="164" y1="120" x2="169" y2="115" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">CRM Inmobiliario</div>
-            <div class="aud-headline">Asesores inmobiliarios y agencias</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Frame-149.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="58" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M44 30 Q58 18 72 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M58 52 L58 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M40 64 L58 56 L76 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M40 64 L34 78 L52 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M76 64 L100 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 94 L48 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 94 L68 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="108" y="68" width="58" height="52" rx="2" fill="rgba(26,26,26,0.04)" stroke="#1A1A1A" stroke-width="1.5"/>
-            <path d="M100 72 L137 40 L174 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="126" y="88" width="22" height="32" rx="2" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="142" y="22" width="44" height="26" rx="5" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M164 28 L164 40" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <path d="M158 35 L170 35" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Estimación de valor</div>
-            <div class="aud-headline">Asesores, valuadores, propietarios</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Mercado%20(1).mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="52" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M38 28 Q52 16 66 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M52 50 L52 92" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M52 52 L48 60 L52 70 L56 60 Z" stroke="#1A1A1A" stroke-width="1.1" stroke-linejoin="round" opacity="0.3"/>
-            <path d="M34 62 L52 54 L70 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M34 62 L22 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M70 62 L82 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 92 L42 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 92 L62 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="98" y1="30" x2="98" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/>
-            <line x1="98" y1="118" x2="190" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/>
-            <rect x="106" y="94" width="18" height="24" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="132" y="74" width="18" height="44" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="158" y="48" width="18" height="70" rx="3" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M115 106 L141 84 L167 56" stroke="#4C5C2D" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M159 44 L169 52 L161 60" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="115" cy="106" r="3.5" fill="#4C5C2D"/>
-            <circle cx="141" cy="84" r="3.5" fill="#4C5C2D"/>
-            <circle cx="167" cy="56" r="3.5" fill="#4C5C2D"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Motor de precios</div>
-            <div class="aud-headline">Bancos, financieras, brokers, inversores</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Info-de-zona.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="54" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M40 28 Q54 16 68 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M54 50 L54 88" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M36 62 L54 54 L72 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M36 62 L44 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M72 62 L80 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M54 88 L44 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M54 88 L64 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="90" y="28" width="62" height="80" rx="4" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.5"/>
-            <rect x="106" y="20" width="30" height="14" rx="3" stroke="#1A1A1A" stroke-width="1.3" fill="rgba(26,26,26,0.03)"/>
-            <line x1="100" y1="52" x2="142" y2="52" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <line x1="100" y1="64" x2="136" y2="64" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <line x1="100" y1="76" x2="140" y2="76" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <circle cx="164" cy="90" r="22" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="1.8" stroke-dasharray="4,3"/>
-            <path d="M153 90 L162 99 L178 78" stroke="#4C5C2D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Plataforma de valuación</div>
-            <div class="aud-headline">Valuadores independientes, unidades de valuación</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Frame-149.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60" cy="40" r="15" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M44 38 Q60 14 76 38" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="42" y1="38" x2="78" y2="38" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <path d="M60 55 L60 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M42 66 L60 58 L78 66" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M42 66 L30 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M78 66 L102 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 96 L50 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 96 L70 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="108" y="44" width="72" height="56" rx="3" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.4"/>
-            <line x1="126" y1="44" x2="126" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="144" y1="44" x2="144" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="162" y1="44" x2="162" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="108" y1="62" x2="180" y2="62" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="108" y1="80" x2="180" y2="80" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <rect x="116" y="66" width="24" height="30" rx="2" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.6"/>
-            <rect x="148" y="52" width="20" height="44" rx="2" stroke="#4C5C2D" stroke-width="1.6" fill="rgba(76,92,45,0.06)"/>
-            <rect x="108" y="100" width="72" height="10" rx="2" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="1.4"/>
-            <line x1="120" y1="100" x2="120" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="132" y1="100" x2="132" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="144" y1="100" x2="144" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="156" y1="100" x2="156" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="168" y1="100" x2="168" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Estudios de mercado</div>
-            <div class="aud-headline">Desarrolladores, constructoras e inversores</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Mercado%20(1).mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="52" cy="40" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M37 35 Q52 22 67 35" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M52 56 L52 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M36 68 L52 60 L68 68" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M68 68 L88 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M36 68 L30 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 96 L42 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 96 L62 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="140" cy="82" r="40" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="2.2"/>
-            <circle cx="140" cy="82" r="28" stroke="#4C5C2D" stroke-width="1.2" stroke-dasharray="3,4" opacity="0.4"/>
-            <path d="M162 106 L183 130" stroke="#4C5C2D" stroke-width="3.2" stroke-linecap="round"/>
-            <path d="M127 86 L140 72 L153 86" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.45"/>
-            <rect x="131" y="86" width="18" height="14" rx="1" stroke="#1A1A1A" stroke-width="1.2" opacity="0.35"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Motor de búsqueda</div>
-            <div class="aud-headline">Buscando un hogar, inversionista, asesor, valuador</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Info-de-zona.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="76" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M61 30 Q76 18 91 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M76 52 L76 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M76 54 L70 60 L76 68 L82 60 Z" stroke="#1A1A1A" stroke-width="1.2" stroke-linejoin="round" opacity="0.35"/>
-            <path d="M58 64 L76 56 L94 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M94 64 L120 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 64 L52 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M76 94 L65 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M76 94 L87 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="138" cy="88" r="18" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="2.2"/>
-            <circle cx="138" cy="88" r="9" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M150 100 L170 122" stroke="#4C5C2D" stroke-width="2.8" stroke-linecap="round"/>
-            <line x1="158" y1="114" x2="163" y2="109" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="164" y1="120" x2="169" y2="115" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">CRM Inmobiliario</div>
-            <div class="aud-headline">Asesores inmobiliarios y agencias</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Frame-149.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="58" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M44 30 Q58 18 72 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M58 52 L58 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M40 64 L58 56 L76 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M40 64 L34 78 L52 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M76 64 L100 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 94 L48 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 94 L68 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="108" y="68" width="58" height="52" rx="2" fill="rgba(26,26,26,0.04)" stroke="#1A1A1A" stroke-width="1.5"/>
-            <path d="M100 72 L137 40 L174 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="126" y="88" width="22" height="32" rx="2" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="142" y="22" width="44" height="26" rx="5" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M164 28 L164 40" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <path d="M158 35 L170 35" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Estimación de valor</div>
-            <div class="aud-headline">Asesores, valuadores, propietarios</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Mercado%20(1).mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="52" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M38 28 Q52 16 66 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M52 50 L52 92" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M52 52 L48 60 L52 70 L56 60 Z" stroke="#1A1A1A" stroke-width="1.1" stroke-linejoin="round" opacity="0.3"/>
-            <path d="M34 62 L52 54 L70 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M34 62 L22 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M70 62 L82 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 92 L42 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 92 L62 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="98" y1="30" x2="98" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/>
-            <line x1="98" y1="118" x2="190" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/>
-            <rect x="106" y="94" width="18" height="24" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="132" y="74" width="18" height="44" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="158" y="48" width="18" height="70" rx="3" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M115 106 L141 84 L167 56" stroke="#4C5C2D" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M159 44 L169 52 L161 60" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="115" cy="106" r="3.5" fill="#4C5C2D"/>
-            <circle cx="141" cy="84" r="3.5" fill="#4C5C2D"/>
-            <circle cx="167" cy="56" r="3.5" fill="#4C5C2D"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Motor de precios</div>
-            <div class="aud-headline">Bancos, financieras, brokers, inversores</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Info-de-zona.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="54" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M40 28 Q54 16 68 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M54 50 L54 88" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M36 62 L54 54 L72 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M36 62 L44 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M72 62 L80 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M54 88 L44 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M54 88 L64 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="90" y="28" width="62" height="80" rx="4" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.5"/>
-            <rect x="106" y="20" width="30" height="14" rx="3" stroke="#1A1A1A" stroke-width="1.3" fill="rgba(26,26,26,0.03)"/>
-            <line x1="100" y1="52" x2="142" y2="52" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <line x1="100" y1="64" x2="136" y2="64" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <line x1="100" y1="76" x2="140" y2="76" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <circle cx="164" cy="90" r="22" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="1.8" stroke-dasharray="4,3"/>
-            <path d="M153 90 L162 99 L178 78" stroke="#4C5C2D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Plataforma de valuación</div>
-            <div class="aud-headline">Valuadores independientes, unidades de valuación</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Frame-149.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60" cy="40" r="15" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M44 38 Q60 14 76 38" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="42" y1="38" x2="78" y2="38" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <path d="M60 55 L60 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M42 66 L60 58 L78 66" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M42 66 L30 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M78 66 L102 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 96 L50 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 96 L70 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="108" y="44" width="72" height="56" rx="3" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.4"/>
-            <line x1="126" y1="44" x2="126" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="144" y1="44" x2="144" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="162" y1="44" x2="162" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="108" y1="62" x2="180" y2="62" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="108" y1="80" x2="180" y2="80" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <rect x="116" y="66" width="24" height="30" rx="2" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.6"/>
-            <rect x="148" y="52" width="20" height="44" rx="2" stroke="#4C5C2D" stroke-width="1.6" fill="rgba(76,92,45,0.06)"/>
-            <rect x="108" y="100" width="72" height="10" rx="2" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="1.4"/>
-            <line x1="120" y1="100" x2="120" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="132" y1="100" x2="132" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="144" y1="100" x2="144" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="156" y1="100" x2="156" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="168" y1="100" x2="168" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Estudios de mercado</div>
-            <div class="aud-headline">Desarrolladores, constructoras e inversores</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Mercado%20(1).mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="52" cy="40" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M37 35 Q52 22 67 35" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M52 56 L52 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M36 68 L52 60 L68 68" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M68 68 L88 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M36 68 L30 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 96 L42 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 96 L62 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="140" cy="82" r="40" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="2.2"/>
-            <circle cx="140" cy="82" r="28" stroke="#4C5C2D" stroke-width="1.2" stroke-dasharray="3,4" opacity="0.4"/>
-            <path d="M162 106 L183 130" stroke="#4C5C2D" stroke-width="3.2" stroke-linecap="round"/>
-            <path d="M127 86 L140 72 L153 86" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.45"/>
-            <rect x="131" y="86" width="18" height="14" rx="1" stroke="#1A1A1A" stroke-width="1.2" opacity="0.35"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Motor de búsqueda</div>
-            <div class="aud-headline">Buscando un hogar, inversionista, asesor, valuador</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Info-de-zona.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="76" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M61 30 Q76 18 91 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M76 52 L76 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M76 54 L70 60 L76 68 L82 60 Z" stroke="#1A1A1A" stroke-width="1.2" stroke-linejoin="round" opacity="0.35"/>
-            <path d="M58 64 L76 56 L94 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M94 64 L120 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 64 L52 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M76 94 L65 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M76 94 L87 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="138" cy="88" r="18" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="2.2"/>
-            <circle cx="138" cy="88" r="9" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M150 100 L170 122" stroke="#4C5C2D" stroke-width="2.8" stroke-linecap="round"/>
-            <line x1="158" y1="114" x2="163" y2="109" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <line x1="164" y1="120" x2="169" y2="115" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">CRM Inmobiliario</div>
-            <div class="aud-headline">Asesores inmobiliarios y agencias</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Frame-149.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="58" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M44 30 Q58 18 72 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M58 52 L58 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M40 64 L58 56 L76 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M40 64 L34 78 L52 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M76 64 L100 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 94 L48 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M58 94 L68 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="108" y="68" width="58" height="52" rx="2" fill="rgba(26,26,26,0.04)" stroke="#1A1A1A" stroke-width="1.5"/>
-            <path d="M100 72 L137 40 L174 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="126" y="88" width="22" height="32" rx="2" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="142" y="22" width="44" height="26" rx="5" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M164 28 L164 40" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <path d="M158 35 L170 35" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Estimación de valor</div>
-            <div class="aud-headline">Asesores, valuadores, propietarios</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Mercado%20(1).mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="52" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M38 28 Q52 16 66 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M52 50 L52 92" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M52 52 L48 60 L52 70 L56 60 Z" stroke="#1A1A1A" stroke-width="1.1" stroke-linejoin="round" opacity="0.3"/>
-            <path d="M34 62 L52 54 L70 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M34 62 L22 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M70 62 L82 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 92 L42 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M52 92 L62 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="98" y1="30" x2="98" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/>
-            <line x1="98" y1="118" x2="190" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/>
-            <rect x="106" y="94" width="18" height="24" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="132" y="74" width="18" height="44" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/>
-            <rect x="158" y="48" width="18" height="70" rx="3" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="1.8"/>
-            <path d="M115 106 L141 84 L167 56" stroke="#4C5C2D" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M159 44 L169 52 L161 60" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="115" cy="106" r="3.5" fill="#4C5C2D"/>
-            <circle cx="141" cy="84" r="3.5" fill="#4C5C2D"/>
-            <circle cx="167" cy="56" r="3.5" fill="#4C5C2D"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Motor de precios</div>
-            <div class="aud-headline">Bancos, financieras, brokers, inversores</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Info-de-zona.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="54" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M40 28 Q54 16 68 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M54 50 L54 88" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M36 62 L54 54 L72 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M36 62 L44 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M72 62 L80 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M54 88 L44 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M54 88 L64 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="90" y="28" width="62" height="80" rx="4" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.5"/>
-            <rect x="106" y="20" width="30" height="14" rx="3" stroke="#1A1A1A" stroke-width="1.3" fill="rgba(26,26,26,0.03)"/>
-            <line x1="100" y1="52" x2="142" y2="52" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <line x1="100" y1="64" x2="136" y2="64" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <line x1="100" y1="76" x2="140" y2="76" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/>
-            <circle cx="164" cy="90" r="22" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="1.8" stroke-dasharray="4,3"/>
-            <path d="M153 90 L162 99 L178 78" stroke="#4C5C2D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Plataforma de valuación</div>
-            <div class="aud-headline">Valuadores independientes, unidades de valuación</div>
-          </div>
-        </div>
-      </div>
-      <div class="aud-item">
-        <div class="aud-card">
-          <div class="aud-illustration">
-          <video class="aud-hover-video" src="Frame-149.mp4" muted loop playsinline preload="none"></video>
-          <svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60" cy="40" r="15" stroke="#1A1A1A" stroke-width="1.6"/>
-            <path d="M44 38 Q60 14 76 38" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="42" y1="38" x2="78" y2="38" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/>
-            <path d="M60 55 L60 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/>
-            <path d="M42 66 L60 58 L78 66" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M42 66 L30 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M78 66 L102 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 96 L50 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M60 96 L70 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="108" y="44" width="72" height="56" rx="3" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.4"/>
-            <line x1="126" y1="44" x2="126" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="144" y1="44" x2="144" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="162" y1="44" x2="162" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="108" y1="62" x2="180" y2="62" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <line x1="108" y1="80" x2="180" y2="80" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/>
-            <rect x="116" y="66" width="24" height="30" rx="2" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.6"/>
-            <rect x="148" y="52" width="20" height="44" rx="2" stroke="#4C5C2D" stroke-width="1.6" fill="rgba(76,92,45,0.06)"/>
-            <rect x="108" y="100" width="72" height="10" rx="2" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="1.4"/>
-            <line x1="120" y1="100" x2="120" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="132" y1="100" x2="132" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="144" y1="100" x2="144" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="156" y1="100" x2="156" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-            <line x1="168" y1="100" x2="168" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/>
-          </svg>
-          </div>
-          <div class="aud-card-body">
-            <div class="aud-type">Estudios de mercado</div>
-            <div class="aud-headline">Desarrolladores, constructoras e inversores</div>
-          </div>
-        </div>
-      </div>
-    </div><!-- /.aud-items -->
-    </div><!-- /.aud-center -->
-    </div><!-- /.aud-rotary -->
+    </div>
   </section>
 
   <!-- ═══════════════════════════════════
@@ -2541,6 +2210,68 @@
             <div class="gallery__media-sublabel">Data y tendencias</div>
           </div>
 
+          <!-- item 4 · Estudios de mercado -->
+          <div class="gallery__media-wrap">
+            <div class="gallery__media">
+              <div class="vid-chrome">
+                <span class="vdot vdot-r"></span>
+                <span class="vdot vdot-y"></span>
+                <span class="vdot vdot-g"></span>
+                <div class="vid-urlbar">monopolio.com.mx / estudios</div>
+              </div>
+              <video class="gallery__media__item" autoplay muted loop playsinline>
+                <source src="edm-gallery.mov" type="video/mp4" />
+              </video>
+            </div>
+            <div class="gallery__media-label">Estudios de mercado</div>
+            <div class="gallery__media-sublabel">Viabilidad territorial</div>
+          </div>
+
+          <!-- item 5 · Mapa -->
+          <div class="gallery__media-wrap">
+            <div class="gallery__media">
+              <div class="vid-chrome">
+                <span class="vdot vdot-r"></span>
+                <span class="vdot vdot-y"></span>
+                <span class="vdot vdot-g"></span>
+                <div class="vid-urlbar">monopolio.com.mx / mapa</div>
+              </div>
+              <video class="gallery__media__item" autoplay muted loop playsinline>
+                <source src="mapa-gallery.mov" type="video/mp4" />
+              </video>
+            </div>
+            <div class="gallery__media-label">Vista de mapa</div>
+            <div class="gallery__media-sublabel">Exploración geográfica</div>
+          </div>
+
+          <!-- item 6 · Institucional -->
+          <div class="gallery__media-wrap">
+            <div class="gallery__media">
+              <div class="vid-chrome">
+                <span class="vdot vdot-r"></span>
+                <span class="vdot vdot-y"></span>
+                <span class="vdot vdot-g"></span>
+                <div class="vid-urlbar">monopolio.com.mx</div>
+              </div>
+              <video class="gallery__media__item" autoplay muted loop playsinline>
+                <source src="institucional-cover.mov" type="video/mp4" />
+              </video>
+            </div>
+            <div class="gallery__media-label">Sitio institucional</div>
+            <div class="gallery__media-sublabel">Presencia de marca</div>
+          </div>
+
+          <!-- item 5 · App mobile -->
+          <div class="gallery__media-wrap">
+            <div class="gallery__media gallery__media--mobile">
+              <video class="gallery__media__item--mobile" autoplay muted loop playsinline style="border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                <source src="buscador-app.mov" type="video/mp4" />
+              </video>
+            </div>
+            <div class="gallery__media-label">App mobile</div>
+            <div class="gallery__media-sublabel">Filtros y búsqueda</div>
+          </div>
+
         </div><!-- /.gallery__image__container -->
 
         <div class="gallery-hint" id="gallery-hint">
@@ -2556,6 +2287,264 @@
     </div><!-- /.gallery-scroll-anchor -->
 
   </section>
+
+  <!-- ═══════════════════════════════════
+       BRAND CAROUSEL
+  ═══════════════════════════════════ -->
+  <section id="mono-brand-showcase" data-bg="#080808" style="padding: 100px 0 80px;">
+    <div style="padding: 0 max(40px, calc((100% - 1320px) / 2)); margin-bottom: 48px;">
+      <span class="s-label split-title r" data-splitting>Identidad visual</span>
+      <h2 class="s-title split-title r d1" data-splitting style="margin-top:12px;">Brand &amp;<br/><i>guidelines.</i></h2>
+    </div>
+
+    <div class="mono-brand-carousel-wrap" id="mono-brand-wrapper">
+      <div class="mono-brand-carousel-track" id="mono-brand-container">
+
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide.png" alt="Portada" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Portada</div>
+          <div class="mono-brand-item-sub">Brand Guidelines</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-1.png" alt="Problemática" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Problemática</div>
+          <div class="mono-brand-item-sub">Foundations</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-2.png" alt="Filosofía" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Filosofía</div>
+          <div class="mono-brand-item-sub">Concepto central</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-3.png" alt="Concepto visual" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Concepto visual</div>
+          <div class="mono-brand-item-sub">La unión hace la fuerza</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-4.png" alt="Audiencias" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Audiencias</div>
+          <div class="mono-brand-item-sub">Usuarios principales</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-5.png" alt="Ecosistema" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Ecosistema</div>
+          <div class="mono-brand-item-sub">Monopolio RE y sus productos</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-6.png" alt="Voz y tono" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Voz y tono</div>
+          <div class="mono-brand-item-sub">¿Cómo nos comunicamos?</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-7.png" alt="Valores de marca" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Valores de marca</div>
+          <div class="mono-brand-item-sub">Palabras clave</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-8.png" alt="Valores de marca" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Valores de marca</div>
+          <div class="mono-brand-item-sub">Manifiesto</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-9.png" alt="Logos y símbolos" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Logos y símbolos</div>
+          <div class="mono-brand-item-sub">Construcción de barras</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-10.png" alt="Logos y símbolos" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Logos y símbolos</div>
+          <div class="mono-brand-item-sub">Tipografía</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-11.png" alt="Logos y símbolos" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Logos y símbolos</div>
+          <div class="mono-brand-item-sub">Imagotipo</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-12.png" alt="Logos y símbolos" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Logos y símbolos</div>
+          <div class="mono-brand-item-sub">Variantes de color</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-13.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Foundations</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-14.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Objetivos clave</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-15.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Sistema de color</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-16.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Colores Core</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-17.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Colores Clave</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-18.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Porcentaje de uso</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-19.png" alt="Color" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Color</div>
+          <div class="mono-brand-item-sub">Tokens</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-20.png" alt="Iconografía" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Iconografía</div>
+          <div class="mono-brand-item-sub">Estilo de iconos</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-21.png" alt="Iconografía" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Iconografía</div>
+          <div class="mono-brand-item-sub">Tamaños y aplicación</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-22.png" alt="Componentes" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Componentes</div>
+          <div class="mono-brand-item-sub">Sistema de componentes</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-23.png" alt="Componentes" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Componentes</div>
+          <div class="mono-brand-item-sub">Jerarquía</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-24.png" alt="Tipografía" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Tipografía</div>
+          <div class="mono-brand-item-sub">Sistema tipográfico</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-25.png" alt="Tipografía" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Tipografía</div>
+          <div class="mono-brand-item-sub">Escala</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-26.png" alt="Motion" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Motion</div>
+          <div class="mono-brand-item-sub">Principios de animación</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-27.png" alt="Motion" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Motion</div>
+          <div class="mono-brand-item-sub">Transiciones</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-28.png" alt="Aplicación" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Aplicación</div>
+          <div class="mono-brand-item-sub">Contexto real</div>
+        </div>
+
+        <div class="mono-brand-item-wrap">
+          <div class="mono-brand-item">
+            <img src="brand/Slide-29.png" alt="Aplicación" draggable="false" />
+          </div>
+          <div class="mono-brand-item-label">Aplicación</div>
+          <div class="mono-brand-item-sub">Casos de uso</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
 
   <!-- ═══════════════════════════════════
        APORTE CONCRETO
@@ -2765,61 +2754,96 @@
 
   <!-- SCROLL-DRIVEN HORIZONTAL GALLERY -->
   <script>
-  /* Pattern: sticky wrapper + tall anchor (desktop only).
-     Scroll vertical dentro del anchor → translateX horizontal en el container.
-     Sin scroll hijacking — scroll nativo, cero preventDefault.
-     En mobile: galería simple sin carrousel. */
+  /* Infinite auto-scroll gallery with drag */
   (function() {
-    var anchor    = document.getElementById('gallery-anchor');
     var wrapper   = document.getElementById('gallery-wrapper');
     var container = document.getElementById('gallery-container');
-    var fill      = document.getElementById('gallery-progress-fill');
-    var hint      = document.getElementById('gallery-hint');
-    if (!anchor || !wrapper || !container) return;
+    if (!wrapper || !container) return;
 
-    // Solo activar en desktop (ancho > 768px)
-    if (window.innerWidth <= 768) return;
+    /* Clonar items para el loop infinito */
+    var origItems = Array.from(container.children);
+    origItems.forEach(function(item) {
+      container.appendChild(item.cloneNode(true));
+    });
 
-    var maxTx = 0;
+    var tx        = 0;
+    var loopWidth = 0; /* ancho del set original */
+    var AUTO_SPD  = 0.6; /* px por frame */
+    var isDragging = false;
+    var startX = 0, startTx = 0;
+    var velX = 0, lastX = 0;
+    var rafId;
 
-    function setSize() {
-      maxTx = Math.max(0, container.scrollWidth - wrapper.clientWidth);
-      anchor.style.height = 'calc(100vh + ' + maxTx + 'px)';
+    function measure() {
+      /* loopWidth = ancho de los items originales + gaps */
+      var gap = 24;
+      loopWidth = origItems.reduce(function(acc, el) {
+        return acc + el.offsetWidth + gap;
+      }, 0);
     }
 
-    function applyParallax() {
-      var vc    = window.innerWidth * 0.5;
-      var items = container.querySelectorAll('.gallery__media__item');
-      for (var i = 0; i < items.length; i++) {
-        var el = items[i];
-        var p  = el.parentElement;
-        if (!p) continue;
-        var r  = p.getBoundingClientRect();
-        var ec = r.left + r.width * 0.5;
-        var t  = Math.max(-1, Math.min(1, (ec - vc) / vc));
-        el.style.transform = 'translate3d(' + (-t * 10) + '%, 0, 0)';
-      }
-    }
-
-    function onScroll() {
-      var rect             = anchor.getBoundingClientRect();
-      var scrolledPast     = Math.max(0, -rect.top);
-      var totalScrollable  = anchor.offsetHeight - window.innerHeight;
-      if (totalScrollable <= 0) return;
-
-      var progress = Math.min(1, scrolledPast / totalScrollable);
-      var tx       = progress * maxTx;
-
+    function applyTx() {
+      /* reseteo seamless: cuando tx >= loopWidth, vuelve al inicio */
+      if (tx >= loopWidth) tx -= loopWidth;
+      if (tx < 0) tx += loopWidth;
       container.style.transform = 'translateX(' + (-tx) + 'px)';
-      applyParallax();
-
-      if (fill) fill.style.width = (progress * 100) + '%';
-      if (hint) hint.classList.toggle('is-done', progress >= 0.98);
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', function() { setSize(); onScroll(); });
-    requestAnimationFrame(function() { setSize(); onScroll(); });
+    /* Auto-scroll loop */
+    function autoTick() {
+      if (!isDragging) tx += AUTO_SPD;
+      applyTx();
+      rafId = requestAnimationFrame(autoTick);
+    }
+
+    /* Mouse drag */
+    wrapper.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      startX  = e.clientX;
+      startTx = tx;
+      velX = 0; lastX = e.clientX;
+      wrapper.classList.add('is-dragging');
+    });
+
+    window.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      velX  = e.clientX - lastX;
+      lastX = e.clientX;
+      tx    = startTx - (e.clientX - startX);
+      applyTx();
+    });
+
+    window.addEventListener('mouseup', function() {
+      if (!isDragging) return;
+      isDragging = false;
+      wrapper.classList.remove('is-dragging');
+    });
+
+    /* Touch */
+    wrapper.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      startX  = e.touches[0].clientX;
+      startTx = tx;
+      velX = 0; lastX = e.touches[0].clientX;
+    }, { passive: true });
+
+    wrapper.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      velX  = e.touches[0].clientX - lastX;
+      lastX = e.touches[0].clientX;
+      tx    = startTx - (e.touches[0].clientX - startX);
+      applyTx();
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', function() {
+      isDragging = false;
+    });
+
+    window.addEventListener('resize', measure);
+    requestAnimationFrame(function() {
+      measure();
+      autoTick();
+    });
   })();
   </script>
 
@@ -3134,44 +3158,98 @@
      - RIGHT: cards scrollean verticalmente, cada una = 100vh
   ───────────────────────────────────────────── */
   (function initVtl() {
+    var vtlContainer = document.getElementById('vtl');
+    var colLeft = document.querySelector('#vtl .vtl-col-left');
+    var colCenter = document.querySelector('#vtl .vtl-col-center');
+    var colRight = document.querySelector('#vtl .vtl-col-right');
     var panels = document.querySelectorAll('#vtl .vtl-panel');
     var glyphs = document.querySelectorAll('#vtl .vtl-node-glyph');
     var cards  = document.querySelectorAll('#vtl .vtl-card');
     if (!cards.length) return;
 
-    // Split animation function
-    function animateSplitTitle(el) {
+    // Entrance animation tied to scroll
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && colLeft && colCenter && colRight) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: vtlContainer,
+          start: 'top 70%',
+          end: 'top 20%',
+          scrub: 0.5,
+          once: true
+        }
+      })
+        .to(colLeft, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0)
+        .to(colCenter, { opacity: 1, scale: 1, duration: 0.7, ease: 'power3.out' }, 0.15)
+        .to(colRight, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, 0.3);
+    }
+
+    // Split animation - entrance (demo5: scaleY from bottom)
+    function animateSplitTitleIn(el) {
       if (typeof gsap === 'undefined') return;
       const chars = el.querySelectorAll('.char');
       if (!chars.length) return;
       gsap.fromTo(chars,
-        { opacity: 0, scale: 1.7 },
         {
-          duration: 0.6,
-          ease: 'power3.out',
+          willChange: 'transform, opacity',
+          transformOrigin: '50% 100%',
+          scaleY: 0,
+          opacity: 0
+        },
+        {
+          duration: 0.3,
+          ease: 'power4',
+          scaleY: 1,
           opacity: 1,
-          scale: 1,
-          stagger: { each: 0.013, from: 'edges' }
+          stagger: { each: 0.015, from: 'start' }
         }
       );
     }
 
-    var currentIdx = 0;
+    // Split animation - exit (demo5: scaleY to top)
+    function animateSplitTitleOut(el) {
+      if (typeof gsap === 'undefined') return;
+      const chars = el.querySelectorAll('.char');
+      if (!chars.length) return;
+      gsap.to(chars, {
+        duration: 0.3,
+        ease: 'sine.in',
+        transformOrigin: '50% 0%',
+        scaleY: 0,
+        opacity: 0,
+        stagger: { each: 0.02, from: 'start' }
+      });
+    }
+
+    var currentIdx = -1;
+    var isMobile = window.innerWidth <= 860;
+
     function activate(idx) {
       if (idx === currentIdx) return;
+
+      // Only animate on desktop
+      if (!isMobile) {
+        // Animate out previous title
+        if (currentIdx >= 0) {
+          var prevPanel = panels[currentIdx];
+          if (prevPanel) {
+            var prevTitle = prevPanel.querySelector('.vtl-name.split-title');
+            if (prevTitle) {
+              animateSplitTitleOut(prevTitle);
+            }
+          }
+        }
+      }
+
       currentIdx = idx;
       panels.forEach(function(p, i) {
         var isActive = i === idx;
         p.classList.toggle('is-active', isActive);
-        if (isActive) {
+        if (isActive && !isMobile) {
           var titleEl = p.querySelector('.vtl-name.split-title');
           if (titleEl && typeof Splitting !== 'undefined') {
-            requestAnimationFrame(function() {
-              Splitting({ target: titleEl });
-              requestAnimationFrame(function() {
-                animateSplitTitle(titleEl);
-              });
-            });
+            Splitting({ target: titleEl });
+            animateSplitTitleIn(titleEl);
           }
         }
       });
@@ -3179,6 +3257,8 @@
     }
 
     // Detect which card is in viewport using IntersectionObserver
+    // rootMargin '-20% 0px -35% 0px' triggers when card has entered top 65% of viewport
+    // ensuring the image is well-positioned before the panel text switches
     var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -3187,112 +3267,12 @@
           activate(idx);
         }
       });
-    }, { threshold: 0.5, rootMargin: '-10% 0px -10% 0px' });
+    }, { threshold: 0.3, rootMargin: '-15% 0px -40% 0px' });
 
     cards.forEach(function(card) { observer.observe(card); });
   })();
 
 
-  /* ─────────────────────────────────────────────
-     AUDIENCE ROTARY GALLERY
-     Adapted from interactive-image-gallery
-     (Hyundai / @deadrabbbbit inspiration)
-     Uses GSAP + Draggable for rotary carousel
-  ───────────────────────────────────────────── */
-  (function initAudRotary() {
-    const items = gsap.utils.toArray('#audItems .aud-item');
-    if (!items.length || typeof Draggable === 'undefined') return;
-
-    const total  = items.length;          // 18 (6 unique × 3)
-    const degree = 360 / total;           // 20° per step — ~56px gap at r=820px
-
-    /* ── Entrance: stagger fly-in from sides, then settle into wheel ── */
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
-    const uniqueCount = 6; // Only animate the first 6; rest start in position silently
-
-    items.forEach((item, i) => {
-      if (i < uniqueCount) {
-        const sign    = Math.floor((i / 2) % 2) ? 1 : -1;
-        const value   = Math.floor((i + 4) / 4) * 4;
-        const initRot = i > uniqueCount - 3 ? 0 : sign * value;
-        gsap.set(item, { rotation: initRot, scale: 0.6 });
-
-        tl.from(item, {
-          x: () => i % 2
-            ? window.innerWidth + item.clientWidth * 3
-            : -window.innerWidth - item.clientWidth * 3,
-          y: () => window.innerHeight * 0.6,
-          rotation: i % 2 ? 160 : -160,
-          scale: 3,
-          opacity: 1,
-          delay: 0.1 * Math.floor(i / 2),
-        }, 0);
-      } else {
-        // Hidden copies: set directly to their rotary position, no animation
-        gsap.set(item, { scale: 0.6 });
-      }
-
-      const settleMark = 0.1 * (uniqueCount / 2 - 1) + 1;
-      tl.to(item, { scale: 1, duration: 0 }, settleMark);
-
-      const rotAngle = i * degree;
-      tl.to(item, {
-        transformOrigin: 'center 820px',
-        rotation: i > total / 2 ? -degree * (total - i) : rotAngle,
-        duration: 1,
-        ease: 'power1.out',
-      }, settleMark);
-    });
-
-    /* ── Draggable: rotation with snap to nearest 20° on release ── */
-    Draggable.create('#audItems', {
-      type: 'rotation',
-      onDragEnd: function () {
-        const nearest = Math.round(this.rotation / degree) * degree;
-        gsap.to('#audItems', {
-          rotation: nearest,
-          duration: 0.55,
-          ease: 'power3.out',
-        });
-      },
-    });
-  })();
-
-
-  /* ─────────────────────────────────────────────
-     AUD-CARD HOVER — scale + random video play
-  ───────────────────────────────────────────── */
-  (function() {
-    const VIDEOS = [
-      'Mercado%20(1).mp4',
-      'Info-de-zona.mp4',
-      'Frame-149.mp4',
-    ];
-
-    function randomVideo(exclude) {
-      const pool = VIDEOS.filter(v => v !== exclude);
-      return pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    document.querySelectorAll('.aud-card').forEach(card => {
-      const vid = card.querySelector('.aud-hover-video');
-      if (!vid) return;
-
-      card.addEventListener('mouseenter', () => {
-        // Pick a random video different from what's currently loaded
-        const src = randomVideo(vid.dataset.last || '');
-        vid.dataset.last = src;
-        vid.src = src;
-        vid.load();
-        vid.play().catch(() => {});
-      });
-
-      card.addEventListener('mouseleave', () => {
-        vid.pause();
-        vid.src = '';
-      });
-    });
-  })();
 
   /* ─────────────────────────────────────────────
      DYNAMIC BACKGROUND — IntersectionObserver
@@ -3361,6 +3341,502 @@
     update();
   })();
 
+
+    /* ─── AUDIENCIAS: Infinite Gradient 3D Carousel ─── */
+    (function initAudCarousel() {
+      var AUD_CARDS = [
+        {
+          type: 'Motor de búsqueda',
+          headline: 'Buscando un hogar, inversión, asesor',
+          colors: [[76,92,45],[130,155,80]],
+          svg: '<svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="52" cy="40" r="16" stroke="#1A1A1A" stroke-width="1.6"/><path d="M37 35 Q52 22 67 35" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/><path d="M52 56 L52 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/><path d="M36 68 L52 60 L68 68" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M68 68 L88 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M36 68 L30 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M52 96 L42 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M52 96 L62 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><circle cx="140" cy="82" r="40" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="2.2"/><circle cx="140" cy="82" r="28" stroke="#4C5C2D" stroke-width="1.2" stroke-dasharray="3,4" opacity="0.4"/><path d="M162 106 L183 130" stroke="#4C5C2D" stroke-width="3.2" stroke-linecap="round"/><path d="M127 86 L140 72 L153 86" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.45"/><rect x="131" y="86" width="18" height="14" rx="1" stroke="#1A1A1A" stroke-width="1.2" opacity="0.35"/></svg>'
+        },
+        {
+          type: 'CRM Inmobiliario',
+          headline: 'Asesores inmobiliarios y agencias',
+          colors: [[60,85,140],[100,130,190]],
+          svg: '<svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="76" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/><path d="M61 30 Q76 18 91 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/><path d="M76 52 L76 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/><path d="M76 54 L70 60 L76 68 L82 60 Z" stroke="#1A1A1A" stroke-width="1.2" stroke-linejoin="round" opacity="0.35"/><path d="M58 64 L76 56 L94 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M94 64 L120 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M58 64 L52 88" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M76 94 L65 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M76 94 L87 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><circle cx="138" cy="88" r="18" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="2.2"/><circle cx="138" cy="88" r="9" stroke="#4C5C2D" stroke-width="1.8"/><path d="M150 100 L170 122" stroke="#4C5C2D" stroke-width="2.8" stroke-linecap="round"/><line x1="158" y1="114" x2="163" y2="109" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/><line x1="164" y1="120" x2="169" y2="115" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/></svg>'
+        },
+        {
+          type: 'Estimación de valor',
+          headline: 'Asesores, valuadores, propietarios',
+          colors: [[140,80,55],[185,130,90]],
+          svg: '<svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="58" cy="36" r="16" stroke="#1A1A1A" stroke-width="1.6"/><path d="M44 30 Q58 18 72 30" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/><path d="M58 52 L58 94" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/><path d="M40 64 L58 56 L76 64" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 64 L34 78 L52 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M76 64 L100 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M58 94 L48 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M58 94 L68 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><rect x="108" y="68" width="58" height="52" rx="2" fill="rgba(26,26,26,0.04)" stroke="#1A1A1A" stroke-width="1.5"/><path d="M100 72 L137 40 L174 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="126" y="88" width="22" height="32" rx="2" stroke="#1A1A1A" stroke-width="1.2"/><rect x="142" y="22" width="44" height="26" rx="5" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.8"/><path d="M164 28 L164 40" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/><path d="M158 35 L170 35" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/></svg>'
+        },
+        {
+          type: 'Motor de precios',
+          headline: 'Bancos, financieras, brokers',
+          colors: [[30,105,115],[65,155,165]],
+          svg: '<svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="52" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/><path d="M38 28 Q52 16 66 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/><path d="M52 50 L52 92" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/><path d="M52 52 L48 60 L52 70 L56 60 Z" stroke="#1A1A1A" stroke-width="1.1" stroke-linejoin="round" opacity="0.3"/><path d="M34 62 L52 54 L70 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 62 L22 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M70 62 L82 80" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M52 92 L42 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M52 92 L62 128" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><line x1="98" y1="30" x2="98" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/><line x1="98" y1="118" x2="190" y2="118" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" opacity="0.2"/><rect x="106" y="94" width="18" height="24" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/><rect x="132" y="74" width="18" height="44" rx="3" fill="rgba(26,26,26,0.07)" stroke="#1A1A1A" stroke-width="1.2"/><rect x="158" y="48" width="18" height="70" rx="3" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="1.8"/><path d="M115 106 L141 84 L167 56" stroke="#4C5C2D" stroke-width="2.2" stroke-linecap="round"/><path d="M159 44 L169 52 L161 60" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="115" cy="106" r="3.5" fill="#4C5C2D"/><circle cx="141" cy="84" r="3.5" fill="#4C5C2D"/><circle cx="167" cy="56" r="3.5" fill="#4C5C2D"/></svg>'
+        },
+        {
+          type: 'Plataforma de valuación',
+          headline: 'Valuadores independientes',
+          colors: [[110,65,135],[165,105,188]],
+          svg: '<svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="54" cy="34" r="16" stroke="#1A1A1A" stroke-width="1.6"/><path d="M40 28 Q54 16 68 28" stroke="#1A1A1A" stroke-width="1.4" stroke-linecap="round"/><path d="M54 50 L54 88" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/><path d="M36 62 L54 54 L72 62" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M36 62 L44 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M72 62 L80 84" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M54 88 L44 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M54 88 L64 124" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><rect x="90" y="28" width="62" height="80" rx="4" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.5"/><rect x="106" y="20" width="30" height="14" rx="3" stroke="#1A1A1A" stroke-width="1.3" fill="rgba(26,26,26,0.03)"/><line x1="100" y1="52" x2="142" y2="52" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/><line x1="100" y1="64" x2="136" y2="64" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/><line x1="100" y1="76" x2="140" y2="76" stroke="#1A1A1A" stroke-width="1.1" stroke-linecap="round" opacity="0.3"/><circle cx="164" cy="90" r="22" fill="rgba(76,92,45,0.08)" stroke="#4C5C2D" stroke-width="1.8" stroke-dasharray="4,3"/><path d="M153 90 L162 99 L178 78" stroke="#4C5C2D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        },
+        {
+          type: 'Estudios de mercado',
+          headline: 'Desarrolladores y constructoras',
+          colors: [[50,100,65],[90,155,105]],
+          svg: '<svg viewBox="0 0 200 148" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="40" r="15" stroke="#1A1A1A" stroke-width="1.6"/><path d="M44 38 Q60 14 76 38" fill="rgba(76,92,45,0.12)" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="42" y1="38" x2="78" y2="38" stroke="#4C5C2D" stroke-width="2" stroke-linecap="round"/><path d="M60 55 L60 96" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round"/><path d="M42 66 L60 58 L78 66" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 66 L30 82" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M78 66 L102 72" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M60 96 L50 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M60 96 L70 130" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><rect x="108" y="44" width="72" height="56" rx="3" fill="rgba(26,26,26,0.03)" stroke="#1A1A1A" stroke-width="1.4"/><line x1="126" y1="44" x2="126" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/><line x1="144" y1="44" x2="144" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/><line x1="162" y1="44" x2="162" y2="100" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/><line x1="108" y1="62" x2="180" y2="62" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/><line x1="108" y1="80" x2="180" y2="80" stroke="#1A1A1A" stroke-width="0.8" opacity="0.15"/><rect x="116" y="66" width="24" height="30" rx="2" fill="rgba(76,92,45,0.10)" stroke="#4C5C2D" stroke-width="1.6"/><rect x="148" y="52" width="20" height="44" rx="2" stroke="#4C5C2D" stroke-width="1.6" fill="rgba(76,92,45,0.06)"/><rect x="108" y="100" width="72" height="10" rx="2" fill="rgba(76,92,45,0.06)" stroke="#4C5C2D" stroke-width="1.4"/><line x1="120" y1="100" x2="120" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/><line x1="132" y1="100" x2="132" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/><line x1="144" y1="100" x2="144" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/><line x1="156" y1="100" x2="156" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/><line x1="168" y1="100" x2="168" y2="106" stroke="#4C5C2D" stroke-width="1" opacity="0.6"/></svg>'
+        }
+      ];
+
+      // ── Config ──
+      var AUD_FRICTION    = 0.9;
+      var AUD_WHEEL_SENS  = 0.6;
+      var AUD_DRAG_SENS   = 1.0;
+      var AUD_MAX_ROT     = 28;
+      var AUD_MAX_DEPTH   = 140;
+      var AUD_MIN_SCALE   = 0.92;
+      var AUD_SCALE_RNG   = 0.1;
+      var AUD_GAP         = 28;
+
+      // ── DOM ──
+      var audStage    = document.getElementById('audStage');
+      var audCards    = document.getElementById('audCards3d');
+      var audBgCv     = document.getElementById('audBg');
+      if (!audStage || !audCards || !audBgCv) return;
+      var audBgCtx    = audBgCv.getContext('2d', { alpha: false });
+
+      // ── State ──
+      var audItems    = [];
+      var audPos      = [];
+      var audActIdx   = -1;
+      var audEntering = true;
+      var AUD_CW      = 260;
+      var AUD_CH      = 346;
+      var AUD_STEP    = AUD_CW + AUD_GAP;
+      var AUD_TRACK   = 0;
+      var AUD_SX      = 0;
+      var AUD_VH      = audStage.offsetWidth * 0.5;
+      var audVX       = 0;
+      var audRaf      = null;
+      var audBgRaf    = null;
+      var audLt       = 0;
+      var audLbg      = 0;
+      var audGrad     = { r1:240,g1:240,b1:240, r2:235,g2:235,b2:235 };
+      var audBgFast   = 0;
+
+      function audMod(n,m){ return ((n%m)+m)%m; }
+
+      function audCalcT(sx) {
+        var norm = Math.max(-1, Math.min(1, sx / AUD_VH));
+        var inv  = 1 - Math.abs(norm);
+        return {
+          norm: norm,
+          ry:   -norm * AUD_MAX_ROT,
+          tz:   inv * AUD_MAX_DEPTH,
+          sc:   AUD_MIN_SCALE + inv * AUD_SCALE_RNG
+        };
+      }
+
+      function audTfStr(sx) {
+        var t = audCalcT(sx);
+        return {
+          tf: 'translate3d('+sx+'px,-50%,'+t.tz+'px) rotateY('+t.ry+'deg) scale('+t.sc+')',
+          z: t.tz
+        };
+      }
+
+      function audBuild() {
+        audCards.innerHTML = '';
+        audItems = [];
+        var frag = document.createDocumentFragment();
+        AUD_CARDS.forEach(function(d, i) {
+          var el = document.createElement('article');
+          el.className = 'aud-card-3d';
+          el.setAttribute('aria-label', d.type + ': ' + d.headline);
+          // Gradiente por card basado en los colores de cada audiencia
+          var c0 = d.colors[0], c1 = d.colors[1];
+          var bg = 'linear-gradient(160deg,rgb('+c0[0]+','+c0[1]+','+c0[2]+') 0%,rgb('+c1[0]+','+c1[1]+','+c1[2]+') 100%)';
+          el.innerHTML =
+            '<div class="aud-card-inner" style="background:'+bg+';">' +
+              '<div class="aud-card-svg-wrap">' + d.svg + '</div>' +
+              '<div class="aud-card-scrim"></div>' +
+              '<div class="aud-card-footer">' +
+                '<div class="aud-card-type">' + d.type + '</div>' +
+                '<div class="aud-card-headline">' + d.headline + '</div>' +
+              '</div>' +
+            '</div>';
+          frag.appendChild(el);
+          audItems.push({ el: el, x: i * AUD_STEP });
+        });
+        audCards.appendChild(frag);
+      }
+
+      function audMeasure() {
+        var s = audItems[0] && audItems[0].el;
+        if (!s) return;
+        var r = s.getBoundingClientRect();
+        AUD_CW   = r.width  || AUD_CW;
+        AUD_CH   = r.height || AUD_CH;
+        AUD_STEP = AUD_CW + AUD_GAP;
+        AUD_TRACK = audItems.length * AUD_STEP;
+        AUD_VH   = audStage.offsetWidth * 0.5;
+        audItems.forEach(function(it,i){ it.x = i * AUD_STEP; });
+        audPos = new Float32Array(audItems.length);
+      }
+
+      function audUpdate() {
+        var half = AUD_TRACK / 2;
+        var ci = -1, cd = Infinity;
+        for (var i = 0; i < audItems.length; i++) {
+          var p = audItems[i].x - AUD_SX;
+          if (p < -half) p += AUD_TRACK;
+          if (p >  half) p -= AUD_TRACK;
+          audPos[i] = p;
+          var d = Math.abs(p);
+          if (d < cd){ cd = d; ci = i; }
+        }
+        for (var i = 0; i < audItems.length; i++) {
+          var it = audItems[i];
+          var p  = audPos[i];
+          var r  = audTfStr(p);
+          it.el.style.transform = r.tf;
+          it.el.style.zIndex    = String(1000 + Math.round(r.z));
+          it.el.style.filter = '';
+        }
+        if (ci !== audActIdx) audSetGrad(ci);
+      }
+
+      function audTick(t) {
+        var dt = audLt ? (t - audLt)/1000 : 0;
+        audLt = t;
+        AUD_SX = audMod(AUD_SX + audVX * dt, AUD_TRACK);
+        audVX *= Math.pow(AUD_FRICTION, dt * 60);
+        if (Math.abs(audVX) < 0.02) audVX = 0;
+        audUpdate();
+        audRaf = requestAnimationFrame(audTick);
+      }
+
+      function audStart()  { audStop(); audLt=0; audRaf=requestAnimationFrame(function(t){ audUpdate(); audTick(t); }); }
+      function audStop()   { if(audRaf) cancelAnimationFrame(audRaf); audRaf=null; }
+
+      function audSetGrad(idx) {
+        if (!audBgCtx || idx<0 || idx>=audItems.length || idx===audActIdx) return;
+        audActIdx = idx;
+        var c = AUD_CARDS[idx].colors;
+        var to = { r1:c[0][0],g1:c[0][1],b1:c[0][2], r2:c[1][0],g2:c[1][1],b2:c[1][2] };
+        if (window.gsap) {
+          audBgFast = performance.now() + 800;
+          window.gsap.to(audGrad, Object.assign({ duration:0.45, ease:'power2.out' }, to));
+        } else {
+          Object.assign(audGrad, to);
+        }
+      }
+
+      function audResizeBG() {
+        var dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+        var w = audBgCv.clientWidth  || audStage.clientWidth;
+        var h = audBgCv.clientHeight || audStage.clientHeight;
+        var tw = Math.floor(w*dpr), th = Math.floor(h*dpr);
+        if (audBgCv.width!==tw || audBgCv.height!==th) {
+          audBgCv.width=tw; audBgCv.height=th;
+          audBgCtx.setTransform(dpr,0,0,dpr,0,0);
+        }
+      }
+
+      function audDrawBG() {
+        if (!audBgCtx) return;
+        var now = performance.now();
+        var mi  = now < audBgFast ? 16 : 33;
+        if (now - audLbg < mi) { audBgRaf = requestAnimationFrame(audDrawBG); return; }
+        audLbg = now;
+        audResizeBG();
+        var w = audBgCv.clientWidth  || audStage.clientWidth;
+        var h = audBgCv.clientHeight || audStage.clientHeight;
+        audBgCtx.fillStyle = '#f4f3f0';
+        audBgCtx.fillRect(0,0,w,h);
+        var tm = now * 0.0002;
+        var cx=w*0.5, cy=h*0.5;
+        var a1=Math.min(w,h)*0.40, a2=Math.min(w,h)*0.32;
+        var x1=cx+Math.cos(tm)*a1,         y1=cy+Math.sin(tm*0.8)*a1*0.4;
+        var x2=cx+Math.cos(-tm*0.9+1.2)*a2, y2=cy+Math.sin(-tm*0.7+0.7)*a2*0.5;
+        var r1=Math.max(w,h)*0.75, r2=Math.max(w,h)*0.65;
+        var g1=audBgCtx.createRadialGradient(x1,y1,0,x1,y1,r1);
+        g1.addColorStop(0,'rgba('+audGrad.r1+','+audGrad.g1+','+audGrad.b1+',0.82)');
+        g1.addColorStop(1,'rgba(255,255,255,0)');
+        audBgCtx.fillStyle=g1; audBgCtx.fillRect(0,0,w,h);
+        var g2=audBgCtx.createRadialGradient(x2,y2,0,x2,y2,r2);
+        g2.addColorStop(0,'rgba('+audGrad.r2+','+audGrad.g2+','+audGrad.b2+',0.68)');
+        g2.addColorStop(1,'rgba(255,255,255,0)');
+        audBgCtx.fillStyle=g2; audBgCtx.fillRect(0,0,w,h);
+        audBgRaf = requestAnimationFrame(audDrawBG);
+      }
+
+      // BG canvas oculto — funciones vacías para mantener compatibilidad
+      function audStartBG() { /* gradiente desactivado */ }
+      function audStopBG()  { if(audBgRaf) cancelAnimationFrame(audBgRaf); audBgRaf=null; }
+
+      // Entry animation
+      function audAnimEntry(visible) {
+        return new Promise(function(done) {
+          if (!window.gsap) { done(); return; }
+          requestAnimationFrame(function() {
+            var tl = window.gsap.timeline({ onComplete: done });
+            visible.forEach(function(v, idx) {
+              var sx = v.screenX;
+              var t  = audCalcT(sx);
+              v.item.el.style.opacity = '0';
+              v.item.el.style.transform =
+                'translate3d('+sx+'px,-50%,'+t.tz+'px) rotateY('+t.ry+'deg) scale(0.88) translateY(36px)';
+              var s = { p: 0 };
+              tl.to(s, {
+                p: 1, duration: 0.55, ease: 'power3.out',
+                onUpdate: function() {
+                  var p  = s.p;
+                  var sc = 0.88 + (t.sc - 0.88) * p;
+                  var ty = 36 * (1 - p);
+                  v.item.el.style.opacity = p.toFixed(3);
+                  if (p >= 0.999) {
+                    v.item.el.style.transform =
+                      'translate3d('+sx+'px,-50%,'+t.tz+'px) rotateY('+t.ry+'deg) scale('+t.sc+')';
+                  } else {
+                    v.item.el.style.transform =
+                      'translate3d('+sx+'px,-50%,'+t.tz+'px) rotateY('+t.ry+'deg) scale('+sc+') translateY('+ty+'px)';
+                  }
+                }
+              }, idx * 0.05);
+            });
+          });
+        });
+      }
+
+      // Main init (async via promise chain)
+      function audInit() {
+        audBuild();
+        audMeasure();
+
+        // Arrancar centrado en la tarjeta del medio
+        var midIdx = Math.floor((AUD_CARDS.length - 1) / 2);
+        AUD_SX = audMod(midIdx * AUD_STEP, AUD_TRACK || 1);
+        audUpdate();
+
+        // Set initial gradient (closest card to center)
+        var ci = 0, cd = Infinity;
+        for (var i = 0; i < audItems.length; i++) {
+          var p = audItems[i].x - AUD_SX;
+          var d = Math.abs(p);
+          if (d < cd){ cd=d; ci=i; }
+        }
+        audSetGrad(ci);
+        audResizeBG();
+        if (audBgCtx) {
+          audBgCtx.fillStyle = '#f4f3f0';
+          audBgCtx.fillRect(0,0,audBgCv.clientWidth,audBgCv.clientHeight);
+        }
+
+        // Warmup compositing
+        var startSX = AUD_SX;
+        var steps = Math.ceil(AUD_TRACK / (AUD_STEP*0.5));
+        var warmup = Promise.resolve();
+        for (var s = 0; s < steps; s++) {
+          (function(step){
+            warmup = warmup.then(function(){
+              AUD_SX = audMod(step * AUD_STEP * 0.5, AUD_TRACK);
+              audUpdate();
+              if (step % 3 === 0) {
+                return new Promise(function(r){ requestAnimationFrame(r); });
+              }
+            });
+          })(s);
+        }
+
+        warmup.then(function() {
+          AUD_SX = startSX; // volver al centro tras warmup
+          audUpdate();
+          return new Promise(function(r){ requestAnimationFrame(r); });
+        }).then(function() {
+          audStartBG();
+          return new Promise(function(r){ setTimeout(r, 80); });
+        }).then(function() {
+          // Collect visible cards for entry animation
+          var half = AUD_TRACK / 2;
+          var stageW = audStage.offsetWidth;
+          var visible = [];
+          for (var i = 0; i < audItems.length; i++) {
+            var p = audItems[i].x - AUD_SX;
+            if (p < -half) p += AUD_TRACK;
+            if (p >  half) p -= AUD_TRACK;
+            if (Math.abs(p) < stageW * 0.65) {
+              visible.push({ item: audItems[i], screenX: p });
+            }
+          }
+          visible.sort(function(a,b){ return a.screenX - b.screenX; });
+          return audAnimEntry(visible);
+        }).then(function() {
+          audEntering = false;
+          audStart();
+        });
+      }
+
+      // ── Events ──
+      // Scroll horizontal (trackpad / shift+scroll) mueve el carousel
+      // Scroll vertical pasa al navegador sin preventDefault
+      audStage.addEventListener('wheel', function(e) {
+        if (audEntering) return;
+        var absX = Math.abs(e.deltaX);
+        var absY = Math.abs(e.deltaY);
+        // Solo interceptar si el gesto es principalmente horizontal
+        if (absX > absY && absX > 2) {
+          e.preventDefault();
+          audVX += e.deltaX * AUD_WHEEL_SENS * 20;
+        }
+      }, { passive: false });
+
+      audStage.addEventListener('dragstart', function(e){ e.preventDefault(); });
+
+      var audDrag=false, audLx=0, audLt2=0, audLd=0;
+
+      audStage.addEventListener('pointerdown', function(e) {
+        if (audEntering) return;
+        audDrag=true; audLx=e.clientX; audLt2=performance.now(); audLd=0;
+        audStage.setPointerCapture(e.pointerId);
+        audStage.classList.add('aud-dragging');
+      });
+
+      audStage.addEventListener('pointermove', function(e) {
+        if (!audDrag) return;
+        var now=performance.now();
+        var dx=e.clientX-audLx, dt=Math.max(1,now-audLt2)/1000;
+        AUD_SX = audMod(AUD_SX - dx*AUD_DRAG_SENS, AUD_TRACK);
+        audLd=dx/dt; audLx=e.clientX; audLt2=now;
+      });
+
+      audStage.addEventListener('pointerup', function(e) {
+        if (!audDrag) return;
+        audDrag=false;
+        audStage.releasePointerCapture(e.pointerId);
+        audVX = -audLd * AUD_DRAG_SENS;
+        audStage.classList.remove('aud-dragging');
+      });
+
+      var audResizeT;
+      window.addEventListener('resize', function() {
+        clearTimeout(audResizeT);
+        audResizeT = setTimeout(function() {
+          var ratio = AUD_SX / (AUD_TRACK || 1);
+          audMeasure();
+          AUD_SX = audMod(ratio * AUD_TRACK, AUD_TRACK);
+          audUpdate();
+          audResizeBG();
+        }, 80);
+      });
+
+      // Pause when section not visible (perf)
+      if ('IntersectionObserver' in window) {
+        var audIO = new IntersectionObserver(function(entries) {
+          var vis = entries.some(function(e){ return e.isIntersecting; });
+          if (vis && !audEntering) { audStart(); audStartBG(); }
+          else { audStop(); audStopBG(); }
+        }, { threshold: 0 });
+        audIO.observe(audStage);
+      }
+
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) { audStop(); audStopBG(); }
+        else if (!audEntering) { audStart(); audStartBG(); }
+      });
+
+      audInit();
+    })();
+
+  /* ── VTL MEDIA TABS ── */
+  (function() {
+    document.querySelectorAll('.vtl-tabs').forEach(function(tabGroup) {
+      tabGroup.querySelectorAll('.vtl-tab').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var panelId = btn.dataset.panel;
+          var wrap = tabGroup.closest('.vtl-media-wrap');
+          var current = wrap.querySelector('.vtl-media-panel.is-active');
+          var next = document.getElementById(panelId);
+          if (!next || next === current) return;
+
+          // Update tabs immediately
+          tabGroup.querySelectorAll('.vtl-tab').forEach(function(b) { b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+
+          // Fade out current
+          current.classList.add('is-leaving');
+
+          setTimeout(function() {
+            current.classList.remove('is-leaving', 'is-active');
+
+            // Fade in next
+            next.classList.add('is-active', 'is-entering');
+            setTimeout(function() { next.classList.remove('is-entering'); }, 360);
+          }, 180);
+        });
+      });
+    });
+  })();
+
+</script>
+
+<script>
+/* Monopolio brand carousel — infinite auto-scroll + drag */
+(function() {
+  var wrapper   = document.getElementById('mono-brand-wrapper');
+  var container = document.getElementById('mono-brand-container');
+  if (!wrapper || !container) return;
+
+  var origItems = Array.from(container.children);
+  origItems.forEach(function(item) {
+    container.appendChild(item.cloneNode(true));
+  });
+
+  var tx = 0, loopWidth = 0;
+  var AUTO_SPD = 0.6;
+  var isDragging = false;
+  var startX = 0, startTx = 0, lastX = 0;
+
+  function measure() {
+    var gap = 20;
+    loopWidth = origItems.reduce(function(acc, el) {
+      return acc + el.offsetWidth + gap;
+    }, 0);
+  }
+
+  function applyTx() {
+    if (tx >= loopWidth) tx -= loopWidth;
+    if (tx < 0) tx += loopWidth;
+    container.style.transform = 'translateX(' + (-tx) + 'px)';
+  }
+
+  function tick() {
+    if (!isDragging) tx += AUTO_SPD;
+    applyTx();
+    requestAnimationFrame(tick);
+  }
+
+  wrapper.addEventListener('mousedown', function(e) {
+    isDragging = true; startX = e.clientX; startTx = tx;
+    lastX = e.clientX;
+    wrapper.classList.add('is-dragging');
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    lastX = e.clientX;
+    tx = startTx - (e.clientX - startX); applyTx();
+  });
+  window.addEventListener('mouseup', function() {
+    if (!isDragging) return;
+    isDragging = false; wrapper.classList.remove('is-dragging');
+  });
+  wrapper.addEventListener('touchstart', function(e) {
+    isDragging = true; startX = e.touches[0].clientX; startTx = tx;
+    lastX = e.touches[0].clientX;
+  }, { passive: true });
+  wrapper.addEventListener('touchmove', function(e) {
+    lastX = e.touches[0].clientX;
+    tx = startTx - (e.touches[0].clientX - startX); applyTx();
+  }, { passive: true });
+  wrapper.addEventListener('touchend', function() { isDragging = false; });
+
+  requestAnimationFrame(function() { measure(); tick(); });
+})();
 </script>
 </body>
 </html>
