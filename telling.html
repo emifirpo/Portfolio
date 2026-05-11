@@ -346,21 +346,14 @@
     .hero-left { display: flex; flex-direction: column; }
     /* telling logo mark */
     #telling-logo {
-      width: 180px;
-      height: 68px;
+      width: 140px;
+      height: auto;
       margin-bottom: 32px;
-      display: flex;
-      align-items: center;
-      overflow: visible;
     }
-    #telling-logo .tl-mark {
-      font-size: 24px;
-      font-weight: 300;
-      font-style: italic;
-      letter-spacing: -0.8px;
-      color: var(--ink);
-      opacity: 0.72;
-      line-height: 1;
+    #telling-logo img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     .hero-h1 {
@@ -440,6 +433,46 @@
     @media (max-width: 1024px) {
       .hero-inner { grid-template-columns: 1fr; gap: 48px; }
       .hero-img-wrap { margin-top: 0; max-width: 480px; margin-left: auto; margin-right: auto; }
+    }
+
+    /* ─── BRAND CAROUSEL ─── */
+    .brand-carousel-wrap {
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+    }
+    .brand-carousel-wrap.is-dragging { cursor: grabbing; }
+    .brand-carousel-track {
+      display: flex;
+      gap: 20px;
+      padding: 0 max(40px, calc((100% - 1320px) / 2));
+      will-change: transform;
+    }
+    .brand-item-wrap { flex-shrink: 0; display: flex; flex-direction: column; }
+    .brand-item {
+      height: 380px;
+      width: fit-content;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111;
+    }
+    .brand-item img {
+      height: 100%;
+      width: auto;
+      display: block;
+      object-fit: unset;
+    }
+    .brand-item-label {
+      margin-top: 14px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(240,237,232,0.28);
+    }
+    .brand-item-sub {
+      font-size: 12px;
+      color: rgba(240,237,232,0.14);
+      margin-top: 4px;
     }
 
     /* ─── SECTION COMMONS ─── */
@@ -721,71 +754,57 @@
     /* ─── VIDEO SHOWCASE / DISEÑO ─── */
     #showcase {
       background: #080808;
-      padding: 120px max(40px, calc((100% - var(--mw)) / 2));
+      padding: 120px 0 80px;
       overflow: hidden; position: relative;
     }
-    #showcase::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.03'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
-      pointer-events: none;
-    }
     .showcase-inner { position: relative; z-index: 1; }
-    .showcase-reel {
-      display: grid; grid-template-columns: 1fr 1fr 1fr;
-      gap: 24px; margin-top: 64px; align-items: end;
+    .showcase-header {
+      padding: 0 max(40px, calc((100% - var(--mw)) / 2));
+      margin-bottom: 64px;
     }
-    .vid-item.center { transform: translateY(-44px); }
+    /* ── UI Carousel ── */
+    .ui-carousel-wrap {
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+      padding: 12px 0 48px;
+    }
+    .ui-carousel-wrap.is-dragging { cursor: grabbing; }
+    .ui-carousel-track {
+      display: flex;
+      gap: 24px;
+      padding: 0 max(40px, calc((100% - var(--mw)) / 2));
+      will-change: transform;
+    }
+    .ui-item-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
     .vid-frame {
-      border-radius: 14px; overflow: hidden;
+      height: 560px;
+      width: fit-content;
+      border-radius: 20px; overflow: hidden;
       background: #0E1014;
       border: 1px solid rgba(255,255,255,0.09);
-      box-shadow: 0 28px 80px rgba(0,0,0,0.65), 0 2px 0 rgba(255,255,255,0.04);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 2px 0 rgba(255,255,255,0.04);
       transition: box-shadow .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1);
     }
-    .vid-item:hover .vid-frame {
-      box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(76,92,45,0.18), 0 2px 0 rgba(255,255,255,0.06);
+    .vid-frame img {
+      height: 100%;
+      width: auto;
+      display: block;
+      object-fit: unset;
+      draggable: false;
+    }
+    .ui-item-wrap:hover .vid-frame {
+      box-shadow: 0 36px 88px rgba(0,0,0,0.68), 0 0 0 1px rgba(76,92,45,0.16), 0 2px 0 rgba(255,255,255,0.06);
       transform: translateY(-6px);
     }
-    .vid-chrome {
-      height: 34px; background: #0E1014;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      display: flex; align-items: center; padding: 0 14px; gap: 7px;
-    }
-    .vdot { width: 9px; height: 9px; border-radius: 50%; }
-    .vdot-r { background: #FF5F57; opacity: 0.7; }
-    .vdot-y { background: #FEBC2E; opacity: 0.7; }
-    .vdot-g { background: #28C840; opacity: 0.7; }
-    .vid-urlbar {
-      flex: 1; height: 20px; margin: 0 10px;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 5px;
-      display: flex; align-items: center; padding: 0 10px;
-      font-size: 10px; color: rgba(255,255,255,0.18);
-      font-family: var(--f); letter-spacing: 0.02em;
-    }
-    /* Screen placeholder (image replacement area) */
-    .screen-placeholder {
-      width: 100%; aspect-ratio: 3/4;
-      background: #0D0F14;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 10px;
-      padding: 24px;
-    }
-    .screen-placeholder-icon {
-      font-size: 28px; opacity: 0.15;
-    }
-    .screen-placeholder-text {
-      font-size: 10px; font-weight: 600; letter-spacing: .12em;
-      text-transform: uppercase; color: rgba(255,255,255,0.15);
-      text-align: center;
-    }
-    .vid-label { margin-top: 18px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
-    .vid-sublabel { text-align: left; font-size: 12px; color: rgba(255,255,255,0.12); margin-top: 4px; }
+    .vid-label { margin-top: 16px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(240,237,232,0.28); }
+    .vid-sublabel { font-size: 12px; color: rgba(240,237,232,0.14); margin-top: 4px; }
     @media (max-width: 1024px) {
-      .showcase-reel { grid-template-columns: 1fr; gap: 32px; }
-      .vid-item.center { transform: none; }
-      #showcase { padding: 80px max(24px, calc((100% - var(--mw)) / 2)); }
+      #showcase { padding: 80px 0 60px; }
     }
 
     /* ─── TEST ─── */
@@ -1196,7 +1215,7 @@
       <!-- Columna izquierda: texto -->
       <div class="hero-left">
         <div id="telling-logo" class="r d1">
-          <span class="tl-mark">telling</span>
+          <img src="telling-logo.svg" alt="telling" />
         </div>
 
         <h1 class="hero-h1 split-title" data-splitting>
@@ -1568,68 +1587,159 @@
   ═══════════════════════════════════ -->
   <section id="showcase" data-bg="#080808">
     <div class="showcase-inner">
-      <div class="s-label split-title r" data-splitting>04 — Diseñar</div>
-      <h2 class="s-title split-title r d1" data-splitting>La UI del<br /><i>producto.</i></h2>
-      <p class="s-body split-title r d2" data-splitting style="margin-top:14px;">
-        El sistema visual de telling combina legibilidad editorial, jerarquía tipográfica clara y un lenguaje de marca propio. Diseñé los flujos principales para ambos perfiles: lector y creador.
-      </p>
+      <div class="showcase-header">
+        <div class="s-label split-title r" data-splitting>04 — Diseñar</div>
+        <h2 class="s-title split-title r d1" data-splitting>La UI del<br /><i>producto.</i></h2>
+        <p class="s-body split-title r d2" data-splitting style="margin-top:14px;">
+          El sistema visual de telling combina legibilidad editorial, jerarquía tipográfica clara y un lenguaje de marca propio. Diseñé los flujos principales para ambos perfiles: lector y creador.
+        </p>
+      </div>
 
-      <div class="showcase-reel">
+      <div class="ui-carousel-wrap" id="ui-wrapper">
+        <div class="ui-carousel-track" id="ui-container">
 
-        <div class="vid-item r d1">
-          <div class="vid-frame">
-            <div class="vid-chrome">
-              <span class="vdot vdot-r"></span>
-              <span class="vdot vdot-y"></span>
-              <span class="vdot vdot-g"></span>
-              <div class="vid-urlbar">telling.app/feed</div>
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/Feed.png" alt="Feed" draggable="false" />
             </div>
-            <div class="screen-placeholder">
-              <div class="screen-placeholder-icon">📰</div>
-              <div class="screen-placeholder-text">Feed del lector<br />Próximamente</div>
-            </div>
+            <div class="vid-label">Feed personalizado</div>
+            <div class="vid-sublabel">Lectura limpia · Sin publicidad</div>
           </div>
-          <div class="vid-label">Feed personalizado</div>
-          <div class="vid-sublabel">Lectura limpia · Sin publicidad</div>
+
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/Article open.png" alt="Artículo" draggable="false" />
+            </div>
+            <div class="vid-label">Experiencia de lectura</div>
+            <div class="vid-sublabel">Tipografía editorial · Foco total</div>
+          </div>
+
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/Note with 4 photo.png" alt="Nota con fotos" draggable="false" />
+            </div>
+            <div class="vid-label">Artículo multimedia</div>
+            <div class="vid-sublabel">Fotografía · Narrativa visual</div>
+          </div>
+
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/800 - Scrolling results.png" alt="Resultados" draggable="false" />
+            </div>
+            <div class="vid-label">Explorar</div>
+            <div class="vid-sublabel">Contenido curado · Tendencias</div>
+          </div>
+
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/User profile.png" alt="Perfil" draggable="false" />
+            </div>
+            <div class="vid-label">Perfil del autor</div>
+            <div class="vid-sublabel">Identidad · Publicaciones · Métricas</div>
+          </div>
+
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/100 - Signup.png" alt="Registro" draggable="false" />
+            </div>
+            <div class="vid-label">Onboarding</div>
+            <div class="vid-sublabel">Registro · Bienvenida</div>
+          </div>
+
+          <div class="ui-item-wrap">
+            <div class="vid-frame">
+              <img src="telling-ui/1400 - Select plan.png" alt="Selección de plan" draggable="false" />
+            </div>
+            <div class="vid-label">Planes</div>
+            <div class="vid-sublabel">Modelo freemium · Conversión</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       BRAND CAROUSEL
+  ═══════════════════════════════════ -->
+  <section id="brand-showcase" data-bg="#080808" style="padding: 100px 0 80px;">
+    <div style="padding: 0 max(40px, calc((100% - 1320px) / 2)); margin-bottom: 48px;">
+      <span class="s-label split-title r" data-splitting>Identidad visual</span>
+      <h2 class="s-title split-title r d1" data-splitting style="margin-top:12px;">Brand &amp;<br/><i>guidelines.</i></h2>
+    </div>
+
+    <div class="brand-carousel-wrap" id="brand-wrapper">
+      <div class="brand-carousel-track" id="brand-container">
+
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Logo.png" alt="Logotipo" draggable="false" />
+          </div>
+          <div class="brand-item-label">Logotipo</div>
+          <div class="brand-item-sub">Versión principal</div>
         </div>
 
-        <div class="vid-item center r d2">
-          <div class="vid-frame">
-            <div class="vid-chrome">
-              <span class="vdot vdot-r"></span>
-              <span class="vdot vdot-y"></span>
-              <span class="vdot vdot-g"></span>
-              <div class="vid-urlbar">telling.app/article</div>
-            </div>
-            <div class="screen-placeholder">
-              <div class="screen-placeholder-icon">✍</div>
-              <div class="screen-placeholder-text">Vista de artículo<br />Próximamente</div>
-            </div>
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Logo-1.png" alt="Logo variante" draggable="false" />
           </div>
-          <div class="vid-label">Experiencia de lectura</div>
-          <div class="vid-sublabel">Tipografía editorial · Foco total</div>
+          <div class="brand-item-label">Variante</div>
+          <div class="brand-item-sub">Uso sobre fondos claros</div>
         </div>
 
-        <div class="vid-item r d3">
-          <div class="vid-frame">
-            <div class="vid-chrome">
-              <span class="vdot vdot-r"></span>
-              <span class="vdot vdot-y"></span>
-              <span class="vdot vdot-g"></span>
-              <div class="vid-urlbar">telling.app/creator</div>
-            </div>
-            <div class="screen-placeholder">
-              <div class="screen-placeholder-icon">📊</div>
-              <div class="screen-placeholder-text">Dashboard creador<br />Próximamente</div>
-            </div>
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Logo-2.png" alt="Logo variante 2" draggable="false" />
           </div>
-          <div class="vid-label">Panel del creador</div>
-          <div class="vid-sublabel">Publicación · Analytics · Ingresos</div>
+          <div class="brand-item-label">Variante</div>
+          <div class="brand-item-sub">Uso monocromático</div>
+        </div>
+
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Logo-3.png" alt="Logo variante 3" draggable="false" />
+          </div>
+          <div class="brand-item-label">Variante</div>
+          <div class="brand-item-sub">Ícono standalone</div>
+        </div>
+
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Letter pattern.png" alt="Patrón de letra" draggable="false" />
+          </div>
+          <div class="brand-item-label">Patrón tipográfico</div>
+          <div class="brand-item-sub">Sistema de textura</div>
+        </div>
+
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Instagram post - 2.png" alt="Post Instagram" draggable="false" />
+          </div>
+          <div class="brand-item-label">Post Instagram</div>
+          <div class="brand-item-sub">Aplicación en redes</div>
+        </div>
+
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Horizontal banner.png" alt="Banner horizontal" draggable="false" />
+          </div>
+          <div class="brand-item-label">Banner horizontal</div>
+          <div class="brand-item-sub">Pieza editorial</div>
+        </div>
+
+        <div class="brand-item-wrap">
+          <div class="brand-item">
+            <img src="telling-brand/Horizontal banner-1.png" alt="Banner alternativo" draggable="false" />
+          </div>
+          <div class="brand-item-label">Banner alternativo</div>
+          <div class="brand-item-sub">Variante de color</div>
         </div>
 
       </div>
     </div>
   </section>
+
+
 
   <!-- ═══════════════════════════════════
        DECISIONES DE DISEÑO
@@ -2125,6 +2235,137 @@
     } else {
       window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(hide)));
     }
+  })();
+  </script>
+
+  <script>
+  /* UI showcase carousel — infinite auto-scroll + drag */
+  (function() {
+    var wrapper   = document.getElementById('ui-wrapper');
+    var container = document.getElementById('ui-container');
+    if (!wrapper || !container) return;
+
+    var origItems = Array.from(container.children);
+    origItems.forEach(function(item) {
+      container.appendChild(item.cloneNode(true));
+    });
+
+    var tx = 0, loopWidth = 0;
+    var AUTO_SPD = 0.5;
+    var isDragging = false;
+    var startX = 0, startTx = 0, velX = 0, lastX = 0;
+
+    function measure() {
+      var gap = 24;
+      loopWidth = origItems.reduce(function(acc, el) {
+        return acc + el.offsetWidth + gap;
+      }, 0);
+    }
+
+    function applyTx() {
+      if (tx >= loopWidth) tx -= loopWidth;
+      if (tx < 0) tx += loopWidth;
+      container.style.transform = 'translateX(' + (-tx) + 'px)';
+    }
+
+    function tick() {
+      if (!isDragging) tx += AUTO_SPD;
+      applyTx();
+      requestAnimationFrame(tick);
+    }
+
+    wrapper.addEventListener('mousedown', function(e) {
+      isDragging = true; startX = e.clientX; startTx = tx;
+      velX = 0; lastX = e.clientX;
+      wrapper.classList.add('is-dragging');
+    });
+    window.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      velX = e.clientX - lastX; lastX = e.clientX;
+      tx = startTx - (e.clientX - startX); applyTx();
+    });
+    window.addEventListener('mouseup', function() {
+      if (!isDragging) return;
+      isDragging = false; wrapper.classList.remove('is-dragging');
+    });
+    wrapper.addEventListener('touchstart', function(e) {
+      isDragging = true; startX = e.touches[0].clientX; startTx = tx;
+      velX = 0; lastX = e.touches[0].clientX;
+    }, { passive: true });
+    wrapper.addEventListener('touchmove', function(e) {
+      velX = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
+      tx = startTx - (e.touches[0].clientX - startX); applyTx();
+    }, { passive: true });
+    wrapper.addEventListener('touchend', function() {
+      isDragging = false;
+    });
+
+    requestAnimationFrame(function() { measure(); tick(); });
+  })();
+  </script>
+
+  <script>
+  /* Brand carousel — infinite auto-scroll + drag */
+  (function() {
+    var wrapper   = document.getElementById('brand-wrapper');
+    var container = document.getElementById('brand-container');
+    if (!wrapper || !container) return;
+
+    var origItems = Array.from(container.children);
+    origItems.forEach(function(item) {
+      container.appendChild(item.cloneNode(true));
+    });
+
+    var tx = 0, loopWidth = 0;
+    var AUTO_SPD = 0.6;
+    var isDragging = false;
+    var startX = 0, startTx = 0, velX = 0, lastX = 0;
+
+    function measure() {
+      var gap = 20;
+      loopWidth = origItems.reduce(function(acc, el) {
+        return acc + el.offsetWidth + gap;
+      }, 0);
+    }
+
+    function applyTx() {
+      if (tx >= loopWidth) tx -= loopWidth;
+      if (tx < 0) tx += loopWidth;
+      container.style.transform = 'translateX(' + (-tx) + 'px)';
+    }
+
+    function tick() {
+      if (!isDragging) tx += AUTO_SPD;
+      applyTx();
+      requestAnimationFrame(tick);
+    }
+
+    wrapper.addEventListener('mousedown', function(e) {
+      isDragging = true; startX = e.clientX; startTx = tx;
+      velX = 0; lastX = e.clientX;
+      wrapper.classList.add('is-dragging');
+    });
+    window.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      velX = e.clientX - lastX; lastX = e.clientX;
+      tx = startTx - (e.clientX - startX); applyTx();
+    });
+    window.addEventListener('mouseup', function() {
+      if (!isDragging) return;
+      isDragging = false; wrapper.classList.remove('is-dragging');
+    });
+    wrapper.addEventListener('touchstart', function(e) {
+      isDragging = true; startX = e.touches[0].clientX; startTx = tx;
+      velX = 0; lastX = e.touches[0].clientX;
+    }, { passive: true });
+    wrapper.addEventListener('touchmove', function(e) {
+      velX = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
+      tx = startTx - (e.touches[0].clientX - startX); applyTx();
+    }, { passive: true });
+    wrapper.addEventListener('touchend', function() { isDragging = false; });
+
+    window.addEventListener('resize', measure);
+    requestAnimationFrame(function() { measure(); tick(); });
   })();
   </script>
 
