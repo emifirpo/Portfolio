@@ -8,6 +8,9 @@
   <meta name="description" content="Case study: diseño del ecosistema digital de Monopolio, el proptech de real estate más ambicioso de México — desde búsqueda y estimaciones hasta herramientas B2B y productos de data." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preload" as="video" href="monopolio-cover.mp4" type="video/mp4" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,300;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet" /></noscript>
   <style>
@@ -54,17 +57,19 @@
 
     /* ─── CURSOR ─── */
     .cur-dot {
-      position: fixed; width: 8px; height: 8px;
+      position: fixed; top: 0; left: 0; width: 8px; height: 8px;
       background: var(--white); border-radius: 50%;
       pointer-events: none; z-index: 10000;
       transform: translate(-50%,-50%);
+      will-change: transform;
       mix-blend-mode: difference;
     }
     .cur-ring {
-      position: fixed; width: 44px; height: 44px;
+      position: fixed; top: 0; left: 0; width: 44px; height: 44px;
       border: 1.5px solid rgba(255,255,255,0.45);
       border-radius: 50%; pointer-events: none; z-index: 9999;
       transform: translate(-50%,-50%);
+      will-change: transform;
       mix-blend-mode: difference;
       transition: width .35s cubic-bezier(.25,.46,.45,.94),
                   height .35s cubic-bezier(.25,.46,.45,.94);
@@ -1835,7 +1840,7 @@
 
       <!-- Columna derecha: video -->
       <div class="hero-vid-wrap r d3">
-        <video autoplay muted loop playsinline preload="metadata">
+        <video autoplay muted loop playsinline preload="auto" fetchpriority="high">
           <source src="monopolio-cover.mp4" type="video/mp4">
         </video>
         <div class="hero-vid-overlay"></div>
@@ -2316,7 +2321,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide.png" alt="Portada" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide.webp" alt="Portada" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Portada</div>
           <div class="mono-brand-item-sub">Brand Guidelines</div>
@@ -2324,7 +2329,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-1.png" alt="Problemática" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-1.webp" alt="Problemática" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Problemática</div>
           <div class="mono-brand-item-sub">Foundations</div>
@@ -2332,7 +2337,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-2.png" alt="Filosofía" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-2.webp" alt="Filosofía" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Filosofía</div>
           <div class="mono-brand-item-sub">Concepto central</div>
@@ -2340,7 +2345,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-3.png" alt="Concepto visual" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-3.webp" alt="Concepto visual" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Concepto visual</div>
           <div class="mono-brand-item-sub">La unión hace la fuerza</div>
@@ -2348,7 +2353,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-4.png" alt="Audiencias" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-4.webp" alt="Audiencias" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Audiencias</div>
           <div class="mono-brand-item-sub">Usuarios principales</div>
@@ -2356,7 +2361,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-5.png" alt="Ecosistema" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-5.webp" alt="Ecosistema" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Ecosistema</div>
           <div class="mono-brand-item-sub">Monopolio RE y sus productos</div>
@@ -2364,7 +2369,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-6.png" alt="Voz y tono" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-6.webp" alt="Voz y tono" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Voz y tono</div>
           <div class="mono-brand-item-sub">¿Cómo nos comunicamos?</div>
@@ -2372,7 +2377,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-7.png" alt="Valores de marca" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-7.webp" alt="Valores de marca" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Valores de marca</div>
           <div class="mono-brand-item-sub">Palabras clave</div>
@@ -2380,7 +2385,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-8.png" alt="Valores de marca" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-8.webp" alt="Valores de marca" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Valores de marca</div>
           <div class="mono-brand-item-sub">Manifiesto</div>
@@ -2388,7 +2393,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-9.png" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-9.webp" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Logos y símbolos</div>
           <div class="mono-brand-item-sub">Construcción de barras</div>
@@ -2396,7 +2401,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-10.png" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-10.webp" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Logos y símbolos</div>
           <div class="mono-brand-item-sub">Tipografía</div>
@@ -2404,7 +2409,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-11.png" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-11.webp" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Logos y símbolos</div>
           <div class="mono-brand-item-sub">Imagotipo</div>
@@ -2412,7 +2417,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-12.png" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-12.webp" alt="Logos y símbolos" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Logos y símbolos</div>
           <div class="mono-brand-item-sub">Variantes de color</div>
@@ -2420,7 +2425,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-13.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-13.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Foundations</div>
@@ -2428,7 +2433,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-14.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-14.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Objetivos clave</div>
@@ -2436,7 +2441,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-15.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-15.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Sistema de color</div>
@@ -2444,7 +2449,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-16.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-16.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Colores Core</div>
@@ -2452,7 +2457,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-17.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-17.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Colores Clave</div>
@@ -2460,7 +2465,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-18.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-18.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Porcentaje de uso</div>
@@ -2468,7 +2473,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-19.png" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-19.webp" alt="Color" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Color</div>
           <div class="mono-brand-item-sub">Tokens</div>
@@ -2476,7 +2481,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-20.png" alt="Iconografía" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-20.webp" alt="Iconografía" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Iconografía</div>
           <div class="mono-brand-item-sub">Estilo de iconos</div>
@@ -2484,7 +2489,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-21.png" alt="Iconografía" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-21.webp" alt="Iconografía" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Iconografía</div>
           <div class="mono-brand-item-sub">Tamaños y aplicación</div>
@@ -2492,7 +2497,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-22.png" alt="Componentes" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-22.webp" alt="Componentes" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Componentes</div>
           <div class="mono-brand-item-sub">Sistema de componentes</div>
@@ -2500,7 +2505,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-23.png" alt="Componentes" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-23.webp" alt="Componentes" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Componentes</div>
           <div class="mono-brand-item-sub">Jerarquía</div>
@@ -2508,7 +2513,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-24.png" alt="Tipografía" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-24.webp" alt="Tipografía" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Tipografía</div>
           <div class="mono-brand-item-sub">Sistema tipográfico</div>
@@ -2516,7 +2521,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-25.png" alt="Tipografía" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-25.webp" alt="Tipografía" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Tipografía</div>
           <div class="mono-brand-item-sub">Escala</div>
@@ -2524,7 +2529,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-26.png" alt="Motion" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-26.webp" alt="Motion" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Motion</div>
           <div class="mono-brand-item-sub">Principios de animación</div>
@@ -2532,7 +2537,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-27.png" alt="Motion" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-27.webp" alt="Motion" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Motion</div>
           <div class="mono-brand-item-sub">Transiciones</div>
@@ -2540,7 +2545,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-28.png" alt="Aplicación" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-28.webp" alt="Aplicación" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Aplicación</div>
           <div class="mono-brand-item-sub">Contexto real</div>
@@ -2548,7 +2553,7 @@
 
         <div class="mono-brand-item-wrap">
           <div class="mono-brand-item">
-            <img src="brand/Slide-29.png" alt="Aplicación" width="1920" height="1080" draggable="false" loading="lazy" />
+            <img src="brand/Slide-29.webp" alt="Aplicación" width="1920" height="1080" draggable="false" loading="lazy" />
           </div>
           <div class="mono-brand-item-label">Aplicación</div>
           <div class="mono-brand-item-sub">Casos de uso</div>
@@ -2908,10 +2913,10 @@
     const dot  = document.getElementById('curDot');
     const ring = document.getElementById('curRing');
     let mx=0, my=0, rx=0, ry=0;
-    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.transform=`translate(calc(${mx}px - 50%),calc(${my}px - 50%))`; });
     (function tick(){
       rx += (mx-rx)*.1; ry += (my-ry)*.1;
-      ring.style.left=rx+'px'; ring.style.top=ry+'px';
+      ring.style.transform=`translate(calc(${rx}px - 50%),calc(${ry}px - 50%))`;
       requestAnimationFrame(tick);
     })();
     document.querySelectorAll('a,button,.eco-item,.vert-card,.aud-card,.aporte-row,.dif-pill,.impact-item,.vid-frame').forEach(el => {
