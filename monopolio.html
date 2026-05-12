@@ -1832,7 +1832,7 @@
 
       <!-- Columna derecha: video -->
       <div class="hero-vid-wrap r d3">
-        <video autoplay muted loop playsinline preload="auto">
+        <video autoplay muted loop playsinline preload="metadata">
           <source src="monopolio-cover.mp4" type="video/mp4">
         </video>
         <div class="hero-vid-overlay"></div>
@@ -2014,7 +2014,7 @@
             <!-- Panel Web -->
             <div class="vtl-media-panel is-active" id="buscador-web">
               <div style="overflow:hidden;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
-                <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+                <video autoplay muted loop playsinline preload="none" style="width:100%;height:auto;display:block;">
                   <source src="monopolio-cover.mp4" type="video/mp4">
                 </video>
               </div>
@@ -2023,7 +2023,7 @@
             <div class="vtl-media-panel" id="buscador-app">
               <div style="display:flex;justify-content:center;border-radius:16px;border:1px solid rgba(15,15,15,0.08);padding:20px 0;">
                 <div style="width:min(220px,52%);overflow:hidden;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
-                  <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+                  <video autoplay muted loop playsinline preload="none" style="width:100%;height:auto;display:block;">
                     <source src="buscador-app.mp4" type="video/mp4">
                   </video>
                 </div>
@@ -2072,7 +2072,7 @@
         <!-- Card 03 · Asesores -->
         <div class="vtl-card" data-vtl-idx="2">
           <div class="vtl-img" style="flex:none;height:auto;overflow:hidden;background:transparent;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
-            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+            <video autoplay muted loop playsinline preload="none" style="width:100%;height:auto;display:block;">
               <source src="asesores-cover.mp4" type="video/mp4">
             </video>
           </div>
@@ -2089,7 +2089,7 @@
         <!-- Card 04 · EDV -->
         <div class="vtl-card" data-vtl-idx="3">
           <div class="vtl-img" style="flex:none;height:auto;overflow:hidden;background:transparent;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
-            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+            <video autoplay muted loop playsinline preload="none" style="width:100%;height:auto;display:block;">
               <source src="edv-cover.mp4" type="video/mp4">
             </video>
           </div>
@@ -2107,7 +2107,7 @@
         <!-- Card 05 · EDM -->
         <div class="vtl-card" data-vtl-idx="4">
           <div class="vtl-img" style="flex:none;height:auto;overflow:hidden;background:transparent;border-radius:16px;border:1px solid rgba(15,15,15,0.08);">
-            <video autoplay muted loop playsinline preload="auto" style="width:100%;height:auto;display:block;">
+            <video autoplay muted loop playsinline preload="none" style="width:100%;height:auto;display:block;">
               <source src="edm-cover.mp4" type="video/mp4">
             </video>
           </div>
@@ -2758,8 +2758,8 @@
       autoplay:      false,
       animationData: MONO_LOTTIE
     });
-    /* Esperar a que el loader haya salido antes de reproducir */
-    window.addEventListener('load', () => setTimeout(() => monoAnim.play(), 600));
+    /* Reproducir logo Lottie tras primer render */
+    requestAnimationFrame(() => setTimeout(() => monoAnim.play(), 200));
   </script>
 
   <!-- SCROLL-DRIVEN HORIZONTAL GALLERY -->
@@ -2823,7 +2823,7 @@
 
     window.addEventListener('resize', measure);
     if (document.readyState === 'complete') { measure(); tick(); }
-    else { window.addEventListener('load', function() { measure(); tick(); }); }
+    else { document.addEventListener('DOMContentLoaded', function() { measure(); tick(); }); }
   })();
   </script>
 
@@ -2989,13 +2989,17 @@
       });
     })();
 
-    /* ── HERO — revelar después de que el loader sale ── */
-    window.addEventListener('load', () => {
-      const LOADER_DURATION = 100;
+    /* ── HERO — revelar en cuanto el DOM esté listo ── */
+    function revealHero() {
       document.querySelectorAll('#hero .r').forEach((el, i) => {
-        setTimeout(() => el.classList.add('on'), LOADER_DURATION + i * 80);
+        setTimeout(() => el.classList.add('on'), 80 + i * 80);
       });
-    });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', revealHero);
+    } else {
+      revealHero();
+    }
 
     /* ── SCROLL REVEAL ── */
     const revObs = new IntersectionObserver(entries => {
@@ -3818,45 +3822,58 @@
 
   window.addEventListener('resize', measure);
   if (document.readyState === 'complete') { measure(); tick(); }
-  else { window.addEventListener('load', function() { measure(); tick(); }); }
+  else { document.addEventListener('DOMContentLoaded', function() { measure(); tick(); }); }
 })();
 </script>
 
 <script>
-/* iOS Safari autoplay fix — IntersectionObserver fuerza .play() al entrar en viewport */
+/* iOS Safari autoplay — fuerza atributos + observa viewport + captura clones del carousel */
 (function() {
-  var videos = Array.from(document.querySelectorAll('video[autoplay]'));
-  if (!videos.length) return;
+  var observed = new WeakSet();
 
-  /* Forzar atributos necesarios en iOS */
-  videos.forEach(function(v) {
-    v.muted    = true;
-    v.playsInline = true;
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var v = entry.target;
+      if (entry.isIntersecting) {
+        var p = v.play();
+        if (p && p.catch) p.catch(function() {});
+      } else {
+        v.pause();
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px' });
+
+  function register(v) {
+    if (observed.has(v)) return;
+    observed.add(v);
+    /* atributos requeridos por iOS Safari */
+    v.muted        = true;
+    v.loop         = true;
+    v.playsInline  = true;
     v.setAttribute('playsinline', '');
     v.setAttribute('webkit-playsinline', '');
-  });
-
-  if ('IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        var v = entry.target;
-        if (entry.isIntersecting) {
-          var p = v.play();
-          if (p !== undefined) p.catch(function() {});
-        } else {
-          v.pause();
-        }
-      });
-    }, { threshold: 0.25 });
-
-    videos.forEach(function(v) { observer.observe(v); });
-  } else {
-    /* Fallback: intentar reproducir todos de una vez */
-    videos.forEach(function(v) {
-      var p = v.play();
-      if (p !== undefined) p.catch(function() {});
-    });
+    v.setAttribute('muted', '');
+    /* intentar play inmediato (funciona si ya está en viewport) */
+    var p = v.play();
+    if (p && p.catch) p.catch(function() {});
+    io.observe(v);
   }
+
+  /* registrar videos existentes */
+  document.querySelectorAll('video').forEach(register);
+
+  /* capturar videos clonados dinámicamente por los carousels */
+  new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (!node || node.nodeType !== 1) return;
+        var vids = node.tagName === 'VIDEO'
+          ? [node]
+          : Array.from(node.querySelectorAll('video'));
+        vids.forEach(register);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
 })();
 </script>
 </body>
