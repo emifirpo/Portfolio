@@ -744,6 +744,10 @@
       padding-bottom: 22px;
       border-bottom: 1px solid var(--line);
     }
+    .about-profile-head {
+      display: flex; flex-direction: column; align-items: flex-start;
+      margin-bottom: 20px;
+    }
     .s-label {
       font-size: 13px; font-weight: 600;
       letter-spacing: .05em; color: var(--ink);
@@ -1021,6 +1025,14 @@
       will-change: transform, opacity;
       opacity: 0;
     }
+    /* s-label: animacion propia sin splitting */
+    @keyframes label-reveal {
+      from { opacity: 0; clip-path: inset(0 105% 0 0); }
+      to   { opacity: 1; clip-path: inset(0 0%   0 0); }
+    }
+    .s-label.r, .s-label.rr, .s-label.rl { transform: none; transition: none; }
+    .s-label { opacity: 0; }
+    .s-label.on { animation: label-reveal 0.55s cubic-bezier(.16,1,.3,1) forwards; }
 
     /* ── INTRO VEIL — cinematic curtain ── */
     #intro-veil {
@@ -1367,7 +1379,7 @@
 
     <!-- Header: eyebrow + counter -->
     <div class="proj-header r">
-      <span class="s-label split-title" data-splitting>Trabajo seleccionado</span>
+      <span class="s-label r">Trabajo seleccionado</span>
       <span class="proj-counter" id="projCounter">01 / 02</span>
     </div>
 
@@ -1439,7 +1451,7 @@
   <!-- EXPERIENCE -->
   <section id="experience" data-bg="#FFFFFF">
     <div class="s-head r">
-      <span class="s-label split-title" data-splitting>Experiencia</span>
+      <span class="s-label r">Experiencia</span>
     </div>
     <div class="r d1">
       <div class="exp-row">
@@ -1465,8 +1477,9 @@
 
   <!-- ABOUT -->
   <section id="about" data-bg="#F4F3F0">
-    <div class="s-head r" style="border-bottom-color:rgba(0,0,0,0.1);">
-      <span class="s-label split-title" data-splitting style="color:var(--ink);">Sobre mí</span>
+    <div class="about-profile-head r">
+      <img src="emi.png" alt="Emiliano Firpo" style="width:120px; height:120px; border-radius:50%; object-fit:cover; object-position:center top; display:block; border:2px solid rgba(0,0,0,0.08); margin-bottom:32px;" />
+      <span class="s-label r" style="color:var(--ink);">Sobre mí</span>
     </div>
     <div class="about-grid">
       <p class="about-stmt split-title" data-splitting>

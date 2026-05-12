@@ -334,6 +334,14 @@
       will-change: transform, opacity;
       opacity: 0;
     }
+    /* s-label: animacion propia sin splitting */
+    @keyframes label-reveal {
+      from { opacity: 0; clip-path: inset(0 105% 0 0); }
+      to   { opacity: 1; clip-path: inset(0 0%   0 0); }
+    }
+    .s-label.r, .s-label.rr, .s-label.rl { transform: none; transition: none; }
+    .s-label { opacity: 0; }
+    .s-label.on { animation: label-reveal 0.55s cubic-bezier(.16,1,.3,1) forwards; }
 
     /* ─── HERO ─── */
     #hero {
@@ -500,6 +508,11 @@
     .meta-value.ac { color: var(--accent); }
 
     /* ─── BRAND CAROUSEL (monopolio) ─── */
+    #mono-brand-showcase { padding: 100px 0 80px; }
+    @media (max-width: 768px) {
+      #mono-brand-showcase { padding: 48px 0 40px; }
+      .mono-brand-item { height: 200px; }
+    }
     .mono-brand-carousel-wrap {
       overflow: hidden;
       cursor: grab;
@@ -609,10 +622,10 @@
     .s-label {
       display: inline-flex; align-items: center; gap: 14px;
       font-size: 10px; font-weight: 700;
-      color: var(--muted); letter-spacing: .16em; text-transform: uppercase;
+      color: var(--muted); letter-spacing: .08em; text-transform: uppercase;
       margin-bottom: 18px;
     }
-    .s-label::before { content: ''; width: 24px; height: 1.5px; background: var(--accent); flex-shrink: 0; }
+    .s-label::before { display: none; }
 
     .s-title {
       font-size: clamp(32px, 4.5vw, 56px);
@@ -800,6 +813,14 @@
     @media (max-width: 768px) {
       .aud-stage { height: 440px; }
       .aud-card-3d { width: min(58vw, 220px); }
+      .aud-card-svg-wrap { display: none; }
+      .aud-card-scrim { background: linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.55) 100%); }
+      .aud-card-3d:nth-child(1) .aud-card-inner { background: rgb(76,92,45)   !important; }
+      .aud-card-3d:nth-child(2) .aud-card-inner { background: rgb(60,85,140)  !important; }
+      .aud-card-3d:nth-child(3) .aud-card-inner { background: rgb(140,80,55)  !important; }
+      .aud-card-3d:nth-child(4) .aud-card-inner { background: rgb(30,105,115) !important; }
+      .aud-card-3d:nth-child(5) .aud-card-inner { background: rgb(110,65,135) !important; }
+      .aud-card-3d:nth-child(6) .aud-card-inner { background: rgb(50,100,65)  !important; }
     }
     @media (prefers-reduced-motion: reduce) {
       .aud-card-3d { transition: none !important; animation: none !important; }
@@ -1061,15 +1082,17 @@
         position: relative; inset: auto;
         transform: none !important;
         height: auto;
-        margin-bottom: 36px;
+        margin-bottom: 48px;
         padding: 0;
-        border: 1px solid rgba(15,15,15,0.07);
-        border-radius: 12px;
-        overflow: hidden;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
         opacity: 1;
       }
-      .vtl-img { min-height: 200px; flex: none; border-radius: 0; }
-      .vtl-info { padding: 18px 20px 22px; }
+      .vtl-media-wrap { padding: 0; }
+      .vtl-img { min-height: 200px; flex: none; border-radius: 12px; overflow: hidden; width: 100%; }
+      .vtl-media-panel img, .vtl-media-panel video { width: 100%; height: auto; display: block; }
+      .vtl-info { padding: 18px 0 0; }
       .vtl-num { margin-bottom: 16px; }
       .vtl-name { font-size: clamp(24px, 6vw, 32px); margin-bottom: 12px; }
       .vtl-type { font-size: 12px; margin-bottom: 16px; }
@@ -1504,6 +1527,7 @@
       margin-top: 28px; font-size: 13px; color: var(--muted);
       font-style: italic;
     }
+    @media (max-width: 768px) { .cta-back-btn { display: none !important; } }
     .cta-note a { color: var(--accent); border-bottom: 1px solid rgba(76,92,45,0.3); transition: border-color .2s; }
     .cta-note a:hover { border-color: var(--accent); }
 
@@ -1568,27 +1592,13 @@
         margin-right: auto !important;
       }
 
-      /* 4. Showcase → galería simple (no carousel) */
-      #showcase { overflow: visible; position: static; }
-      .gallery-scroll-anchor { position: static; }
-      .gallery__wrapper {
-        padding: 40px 0 !important;
-        margin-bottom: 60px;
-      }
-      .gallery__image__container {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 32px;
-        padding: 0 20px !important;
-        transform: none !important;
-      }
-      .gallery__media-wrap {
-        width: 100%;
-      }
-      .gallery__media {
-        width: 100% !important;
-        max-width: 100% !important;
-      }
+      /* 4. Showcase → carousel sigue horizontal en mobile */
+      #showcase { overflow: hidden; }
+      .gallery__wrapper { padding: 24px 0 32px !important; }
+      .gallery__image__container { padding: 0 20px !important; }
+      .gallery__media { height: 260px; }
+      .gallery__media__item { height: calc(100% - 34px); }
+      .gallery__media__item--mobile { height: 260px; }
       .gallery-hint { display: none !important; }
       .gallery-progress { display: none !important; }
 
@@ -1862,7 +1872,7 @@
   <section class="sec light" id="filosofia" data-bg="#FFFFFF">
     <div class="filo-grid">
       <div>
-        <div class="s-label split-title r" data-splitting>Filosofía de producto</div>
+        <div class="s-label r">Filosofía de producto</div>
         <h2 class="s-title split-title r d1" data-splitting>El propósito<br />de <i>Monopolio</i></h2>
         <p class="s-body split-title r d2" data-splitting style="margin-top:16px">
           Transformar la manera en que usuarios y empresas acceden, interpretan y toman decisiones sobre datos de real estate en México. Precisión, rapidez y accesibilidad — para todos los perfiles del mercado.
@@ -1901,7 +1911,7 @@
   ═══════════════════════════════════ -->
   <section class="sec light" id="ecosistema" data-bg="#FFFFFF">
     <div class="eco-header">
-      <div class="s-label split-title r" data-splitting>Stack de productos</div>
+      <div class="s-label r">Stack de productos</div>
       <h2 class="s-title split-title r d1" data-splitting>El ecosistema y<br /><i>mi trabajo en él</i></h2>
       <p class="eco-intro split-title r d2" data-splitting>Monopolio Group es una suite de productos que atiende todos los perfiles del mercado inmobiliario. Trabajé en 5 de las 6 verticales — desde el buscador principal hasta productos de datos estratégicos.</p>
     </div>
@@ -2124,7 +2134,7 @@
   ═══════════════════════════════════ -->
   <section class="sec off" id="audiencias" data-bg="#F4F3F0" style="padding-bottom: 0;">
     <div style="margin-bottom:56px">
-      <div class="s-label split-title r" data-splitting>Audiencias del ecosistema</div>
+      <div class="s-label r">Audiencias del ecosistema</div>
       <h2 class="s-title split-title r d1" data-splitting>Distintos usuarios,<br /><i>una plataforma.</i></h2>
       <p class="s-body split-title r d2" data-splitting style="margin-top:14px">Monopolio atiende a perfiles muy distintos con necesidades específicas. Diseñar para todos ellos requirió comprensión profunda de cada contexto.</p>
     </div>
@@ -2145,7 +2155,7 @@
   ═══════════════════════════════════ -->
   <section id="showcase" data-bg="#080808">
     <div class="showcase-inner">
-      <div class="s-label split-title r" data-splitting>Producto en acción</div>
+      <div class="s-label r">Producto en acción</div>
       <h2 class="s-title split-title r d1" data-splitting>La UI del<br /><i>producto.</i></h2>
       <p class="s-body split-title r d2" data-splitting style="margin-top:14px;">
         Capturas reales de las interfaces que diseñé en el ecosistema — desde la exploración de zonas hasta el análisis de mercado.
@@ -2291,9 +2301,9 @@
   <!-- ═══════════════════════════════════
        BRAND CAROUSEL
   ═══════════════════════════════════ -->
-  <section id="mono-brand-showcase" data-bg="#080808" style="padding: 100px 0 80px;">
+  <section id="mono-brand-showcase" data-bg="#080808">
     <div style="padding: 0 max(40px, calc((100% - 1320px) / 2)); margin-bottom: 48px;">
-      <span class="s-label split-title r" data-splitting>Identidad visual</span>
+      <span class="s-label r">Identidad visual</span>
       <h2 class="s-title split-title r d1" data-splitting style="margin-top:12px;">Brand &amp;<br/><i>guidelines.</i></h2>
     </div>
 
@@ -2551,7 +2561,7 @@
   ═══════════════════════════════════ -->
   <section class="sec alt" id="aporte" data-bg="#111111">
     <div class="aporte-header">
-      <div class="s-label split-title r" data-splitting>Mi aporte</div>
+      <div class="s-label r">Mi aporte</div>
       <h2 class="s-title split-title r d1" data-splitting>Lo que hice<br /><i>concretamente</i></h2>
       <p class="s-body split-title r d2" data-splitting style="margin-top:14px">Mi trabajo no se limitó a "diseñar interfaces". Aporté en distintos niveles del producto.</p>
     </div>
@@ -2601,7 +2611,7 @@
 
     <!-- Header -->
     <div class="impacto-header">
-      <div class="s-label split-title r" data-splitting>Valor generado</div>
+      <div class="s-label r">Valor generado</div>
       <h2 class="s-title split-title r d1" data-splitting>Impacto<br /><i>real.</i></h2>
       <p class="s-body split-title r d2" data-splitting style="margin-top:16px">Números que miden lo que el diseño generó — menos en intenciones, más en resultados concretos del ecosistema.</p>
     </div>
@@ -2669,7 +2679,7 @@
         <a href="https://www.linkedin.com/in/emiliano-firpo-b07033158/" target="_blank" class="btn-ghost">
           LinkedIn →
         </a>
-        <a href="index.html" class="btn-ghost">
+        <a href="index.html" class="btn-ghost cta-back-btn">
           Ver portfolio
         </a>
       </div>
@@ -2754,28 +2764,23 @@
 
   <!-- SCROLL-DRIVEN HORIZONTAL GALLERY -->
   <script>
-  /* Infinite auto-scroll gallery with drag */
+  /* Infinite auto-scroll gallery — grab drag */
   (function() {
     var wrapper   = document.getElementById('gallery-wrapper');
     var container = document.getElementById('gallery-container');
     if (!wrapper || !container) return;
 
-    /* Clonar items para el loop infinito */
     var origItems = Array.from(container.children);
     origItems.forEach(function(item) {
       container.appendChild(item.cloneNode(true));
     });
 
-    var tx        = 0;
-    var loopWidth = 0; /* ancho del set original */
-    var AUTO_SPD  = 0.6; /* px por frame */
+    var tx = 0, loopWidth = 0;
+    var AUTO_SPD = 0.6;
     var isDragging = false;
-    var startX = 0, startTx = 0;
-    var velX = 0, lastX = 0;
-    var rafId;
+    var startX = 0, startTx = 0, velX = 0, lastX = 0;
 
     function measure() {
-      /* loopWidth = ancho de los items originales + gaps */
       var gap = 24;
       loopWidth = origItems.reduce(function(acc, el) {
         return acc + el.offsetWidth + gap;
@@ -2783,67 +2788,42 @@
     }
 
     function applyTx() {
-      /* reseteo seamless: cuando tx >= loopWidth, vuelve al inicio */
-      if (tx >= loopWidth) tx -= loopWidth;
-      if (tx < 0) tx += loopWidth;
+      if (loopWidth <= 0) return;
+      tx = ((tx % loopWidth) + loopWidth) % loopWidth;
       container.style.transform = 'translateX(' + (-tx) + 'px)';
     }
 
-    /* Auto-scroll loop */
-    function autoTick() {
+    function tick() {
       if (!isDragging) tx += AUTO_SPD;
       applyTx();
-      rafId = requestAnimationFrame(autoTick);
+      requestAnimationFrame(tick);
     }
 
-    /* Mouse drag */
     wrapper.addEventListener('mousedown', function(e) {
-      isDragging = true;
-      startX  = e.clientX;
-      startTx = tx;
-      velX = 0; lastX = e.clientX;
+      isDragging = true; startX = e.clientX; startTx = tx; velX = 0; lastX = e.clientX;
       wrapper.classList.add('is-dragging');
     });
-
     window.addEventListener('mousemove', function(e) {
       if (!isDragging) return;
-      velX  = e.clientX - lastX;
-      lastX = e.clientX;
-      tx    = startTx - (e.clientX - startX);
-      applyTx();
+      velX = e.clientX - lastX; lastX = e.clientX;
+      tx = startTx - (e.clientX - startX); applyTx();
     });
-
     window.addEventListener('mouseup', function() {
       if (!isDragging) return;
-      isDragging = false;
-      wrapper.classList.remove('is-dragging');
+      isDragging = false; wrapper.classList.remove('is-dragging');
     });
-
-    /* Touch */
     wrapper.addEventListener('touchstart', function(e) {
-      isDragging = true;
-      startX  = e.touches[0].clientX;
-      startTx = tx;
-      velX = 0; lastX = e.touches[0].clientX;
+      isDragging = true; startX = e.touches[0].clientX; startTx = tx; velX = 0; lastX = e.touches[0].clientX;
     }, { passive: true });
-
     wrapper.addEventListener('touchmove', function(e) {
-      if (!isDragging) return;
-      velX  = e.touches[0].clientX - lastX;
-      lastX = e.touches[0].clientX;
-      tx    = startTx - (e.touches[0].clientX - startX);
-      applyTx();
+      velX = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
+      tx = startTx - (e.touches[0].clientX - startX); applyTx();
     }, { passive: true });
-
-    wrapper.addEventListener('touchend', function() {
-      isDragging = false;
-    });
+    wrapper.addEventListener('touchend', function() { isDragging = false; });
 
     window.addEventListener('resize', measure);
-    requestAnimationFrame(function() {
-      measure();
-      autoTick();
-    });
+    if (document.readyState === 'complete') { measure(); tick(); }
+    else { window.addEventListener('load', function() { measure(); tick(); }); }
   })();
   </script>
 
@@ -3011,11 +2991,9 @@
 
     /* ── HERO — revelar después de que el loader sale ── */
     window.addEventListener('load', () => {
-      /* El loader tiene 500ms de transición + ~30ms rAF.
-         Esperamos 560ms para que el usuario vea las animaciones. */
-      const LOADER_DURATION = 560;
+      const LOADER_DURATION = 100;
       document.querySelectorAll('#hero .r').forEach((el, i) => {
-        setTimeout(() => el.classList.add('on'), LOADER_DURATION + i * 120);
+        setTimeout(() => el.classList.add('on'), LOADER_DURATION + i * 80);
       });
     });
 
@@ -3047,13 +3025,18 @@
         );
       }
 
-      /* Hero H1 + lead — sin delay */
-      window.addEventListener('load', () => {
+      /* Hero H1 + lead — DOMContentLoaded para no esperar videos/fuentes */
+      function initHeroAnim() {
         const h1   = document.querySelector('.hero-h1.split-title');
         const lead = document.querySelector('.hero-lead.split-title');
-        if (h1)   animateSplitTitle(h1,   0,    false);
+        if (h1)   animateSplitTitle(h1,   0.1,  false);
         if (lead) animateSplitTitle(lead, 0.55, true);
-      });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initHeroAnim);
+      } else {
+        initHeroAnim();
+      }
 
       /* Section titles + labels — scroll-driven (scrub) */
       if (typeof ScrollTrigger !== 'undefined') {
@@ -3776,7 +3759,7 @@
 </script>
 
 <script>
-/* Monopolio brand carousel — infinite auto-scroll + drag */
+/* Monopolio brand carousel — infinite auto-scroll + grab drag */
 (function() {
   var wrapper   = document.getElementById('mono-brand-wrapper');
   var container = document.getElementById('mono-brand-container');
@@ -3790,7 +3773,7 @@
   var tx = 0, loopWidth = 0;
   var AUTO_SPD = 0.6;
   var isDragging = false;
-  var startX = 0, startTx = 0, lastX = 0;
+  var startX = 0, startTx = 0, velX = 0, lastX = 0;
 
   function measure() {
     var gap = 20;
@@ -3800,8 +3783,8 @@
   }
 
   function applyTx() {
-    if (tx >= loopWidth) tx -= loopWidth;
-    if (tx < 0) tx += loopWidth;
+    if (loopWidth <= 0) return;
+    tx = ((tx % loopWidth) + loopWidth) % loopWidth;
     container.style.transform = 'translateX(' + (-tx) + 'px)';
   }
 
@@ -3812,13 +3795,12 @@
   }
 
   wrapper.addEventListener('mousedown', function(e) {
-    isDragging = true; startX = e.clientX; startTx = tx;
-    lastX = e.clientX;
+    isDragging = true; startX = e.clientX; startTx = tx; velX = 0; lastX = e.clientX;
     wrapper.classList.add('is-dragging');
   });
   window.addEventListener('mousemove', function(e) {
     if (!isDragging) return;
-    lastX = e.clientX;
+    velX = e.clientX - lastX; lastX = e.clientX;
     tx = startTx - (e.clientX - startX); applyTx();
   });
   window.addEventListener('mouseup', function() {
@@ -3826,16 +3808,55 @@
     isDragging = false; wrapper.classList.remove('is-dragging');
   });
   wrapper.addEventListener('touchstart', function(e) {
-    isDragging = true; startX = e.touches[0].clientX; startTx = tx;
-    lastX = e.touches[0].clientX;
+    isDragging = true; startX = e.touches[0].clientX; startTx = tx; velX = 0; lastX = e.touches[0].clientX;
   }, { passive: true });
   wrapper.addEventListener('touchmove', function(e) {
-    lastX = e.touches[0].clientX;
+    velX = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
     tx = startTx - (e.touches[0].clientX - startX); applyTx();
   }, { passive: true });
   wrapper.addEventListener('touchend', function() { isDragging = false; });
 
-  requestAnimationFrame(function() { measure(); tick(); });
+  window.addEventListener('resize', measure);
+  if (document.readyState === 'complete') { measure(); tick(); }
+  else { window.addEventListener('load', function() { measure(); tick(); }); }
+})();
+</script>
+
+<script>
+/* iOS Safari autoplay fix — IntersectionObserver fuerza .play() al entrar en viewport */
+(function() {
+  var videos = Array.from(document.querySelectorAll('video[autoplay]'));
+  if (!videos.length) return;
+
+  /* Forzar atributos necesarios en iOS */
+  videos.forEach(function(v) {
+    v.muted    = true;
+    v.playsInline = true;
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+  });
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var v = entry.target;
+        if (entry.isIntersecting) {
+          var p = v.play();
+          if (p !== undefined) p.catch(function() {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { threshold: 0.25 });
+
+    videos.forEach(function(v) { observer.observe(v); });
+  } else {
+    /* Fallback: intentar reproducir todos de una vez */
+    videos.forEach(function(v) {
+      var p = v.play();
+      if (p !== undefined) p.catch(function() {});
+    });
+  }
 })();
 </script>
 </body>

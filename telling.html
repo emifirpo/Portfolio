@@ -322,6 +322,14 @@
     .split-title.splitting { opacity: 1; }
     .split-title.splitting .word { display: inline-block; }
     .split-title.splitting .char { display: inline-block; will-change: transform, opacity; opacity: 0; }
+    /* s-label: animacion propia sin splitting */
+    @keyframes label-reveal {
+      from { opacity: 0; clip-path: inset(0 105% 0 0); }
+      to   { opacity: 1; clip-path: inset(0 0%   0 0); }
+    }
+    .s-label.r, .s-label.rr, .s-label.rl { transform: none; transition: none; }
+    .s-label { opacity: 0; }
+    .s-label.on { animation: label-reveal 0.55s cubic-bezier(.16,1,.3,1) forwards; }
 
     /* ─── HERO ─── */
     #hero {
@@ -958,6 +966,7 @@
     }
     .btn-ghost:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.04); color: var(--ink); }
     .cta-note { margin-top: 28px; font-size: 13px; color: var(--muted); font-style: italic; }
+    @media (max-width: 768px) { .cta-back-btn { display: none !important; } }
     .cta-note a { color: var(--accent); border-bottom: 1px solid rgba(76,92,45,0.3); transition: border-color .2s; }
     .cta-note a:hover { border-color: var(--accent); }
 
@@ -1265,7 +1274,7 @@
   <section class="sec" id="contexto" data-bg="#0A0A0A">
     <div class="filo-grid">
       <div>
-        <div class="s-label split-title r" data-splitting>El problema</div>
+        <div class="s-label r">El problema</div>
         <h2 class="s-title split-title r d1" data-splitting>El mercado<br /><i>de noticias.</i></h2>
         <p class="filo-big r d2">
           <i>La principal fuente de información para centennials y millennials son las redes sociales.</i> Pero las redes son un terreno hostil para el periodismo de calidad y la monetización independiente.
@@ -1312,7 +1321,7 @@
   ═══════════════════════════════════ -->
   <section class="sec" id="proceso" data-bg="#111111" style="background:#111111">
     <div class="eco-header">
-      <div class="s-label split-title r" data-splitting>Metodología</div>
+      <div class="s-label r">Metodología</div>
       <h2 class="s-title split-title r d1" data-splitting>El proceso de<br /><i>diseño.</i></h2>
       <p class="eco-intro split-title r d2" data-splitting>Abordé el proyecto con design thinking en 5 fases iterativas, adaptado a las necesidades de un MLP con dos perfiles de usuario radicalmente distintos: lectores y creadores de contenido.</p>
     </div>
@@ -1384,7 +1393,7 @@
        INVESTIGACIÓN
   ═══════════════════════════════════ -->
   <section class="sec off" id="investigacion" data-bg="#F4F3F0">
-    <div class="s-label split-title r" data-splitting>01 — Empatizar</div>
+    <div class="s-label r">01 — Empatizar</div>
     <h2 class="s-title split-title r d1" data-splitting>¿Cómo consumen<br /><i>información?</i></h2>
     <p class="s-body split-title r d2" data-splitting>
       Combiné investigación secundaria global con entrevistas cualitativas y una encuesta de 118 participantes para entender los hábitos, motivaciones y frustraciones de lectores y publishers.
@@ -1424,7 +1433,7 @@
     </div>
 
     <!-- Quotes from publishers -->
-    <div class="s-label split-title r" data-splitting style="margin-top: 72px;">Voz del usuario</div>
+    <div class="s-label r" style="margin-top: 72px;">Voz del usuario</div>
     <h3 class="s-title split-title r d1" data-splitting style="font-size: clamp(24px, 3vw, 40px);">Lo que dijeron<br /><i>los creadores.</i></h3>
 
     <div class="quotes-grid r d2">
@@ -1451,7 +1460,7 @@
        USUARIOS
   ═══════════════════════════════════ -->
   <section class="sec" id="usuarios" data-bg="#0A0A0A">
-    <div class="s-label split-title r" data-splitting>02 — Definir</div>
+    <div class="s-label r">02 — Definir</div>
     <h2 class="s-title split-title r d1" data-splitting>Dos usuarios,<br /><i>un ecosistema.</i></h2>
     <p class="s-body split-title r d2" data-splitting>
       telling es un producto dual. El desafío de diseño fue crear una experiencia que sirviera de forma óptima a dos perfiles con objetivos y modelos mentales radicalmente diferentes.
@@ -1522,7 +1531,7 @@
        SÍNTESIS / INSIGHTS
   ═══════════════════════════════════ -->
   <section class="sec" id="sintesis" data-bg="#111111" style="background:#111111">
-    <div class="s-label split-title r" data-splitting>Insights clave</div>
+    <div class="s-label r">Insights clave</div>
     <h2 class="s-title split-title r d1" data-splitting>Lo que la data<br /><i>reveló.</i></h2>
     <p class="s-body split-title r d2" data-splitting>
       La síntesis de la investigación generó cinco insights que guiaron todas las decisiones de diseño posteriores.
@@ -1588,7 +1597,7 @@
   <section id="showcase" data-bg="#080808">
     <div class="showcase-inner">
       <div class="showcase-header">
-        <div class="s-label split-title r" data-splitting>04 — Diseñar</div>
+        <div class="s-label r">04 — Diseñar</div>
         <h2 class="s-title split-title r d1" data-splitting>La UI del<br /><i>producto.</i></h2>
         <p class="s-body split-title r d2" data-splitting style="margin-top:14px;">
           El sistema visual de telling combina legibilidad editorial, jerarquía tipográfica clara y un lenguaje de marca propio. Diseñé los flujos principales para ambos perfiles: lector y creador.
@@ -1664,7 +1673,7 @@
   ═══════════════════════════════════ -->
   <section id="brand-showcase" data-bg="#080808" style="padding: 100px 0 80px;">
     <div style="padding: 0 max(40px, calc((100% - 1320px) / 2)); margin-bottom: 48px;">
-      <span class="s-label split-title r" data-splitting>Identidad visual</span>
+      <span class="s-label r">Identidad visual</span>
       <h2 class="s-title split-title r d1" data-splitting style="margin-top:12px;">Brand &amp;<br/><i>guidelines.</i></h2>
     </div>
 
@@ -1745,7 +1754,7 @@
        DECISIONES DE DISEÑO
   ═══════════════════════════════════ -->
   <section class="sec" id="decisiones" data-bg="#0A0A0A">
-    <div class="s-label split-title r" data-splitting>Criterio de diseño</div>
+    <div class="s-label r">Criterio de diseño</div>
     <h2 class="s-title split-title r d1" data-splitting>Decisiones que<br /><i>definen el producto.</i></h2>
     <p class="s-body split-title r d2" data-splitting>
       Cada decisión de diseño estuvo orientada a construir confianza, reducir fricción y sostener la percepción de calidad que telling necesita para justificar el modelo de suscripción.
@@ -1795,7 +1804,7 @@
   ═══════════════════════════════════ -->
   <section class="sec" id="test" data-bg="#111111" style="background:#111111">
     <div class="test-header">
-      <div class="s-label split-title r" data-splitting>05 — Testear</div>
+      <div class="s-label r">05 — Testear</div>
       <h2 class="s-title split-title r d1" data-splitting>Validación con<br /><i>usuarios reales.</i></h2>
       <p class="s-body split-title r d2" data-splitting>
         Testeé el prototipo de alta fidelidad con usuarios reales de ambos perfiles. El objetivo era validar la claridad del flujo, la comprensión del modelo de suscripción y la usabilidad del panel del creador.
@@ -1847,7 +1856,7 @@
   <section class="sec off" id="impacto" data-bg="#F4F3F0">
 
     <div class="impacto-header">
-      <div class="s-label split-title r" data-splitting>Resultado</div>
+      <div class="s-label r">Resultado</div>
       <h2 class="s-title split-title r d1" data-splitting>El MLP<br /><i>entregado.</i></h2>
       <p class="s-body split-title r d2" data-splitting style="margin-top:16px">Resultados concretos del proceso de diseño — de la investigación inicial al producto validado con usuarios reales.</p>
     </div>
@@ -1910,7 +1919,7 @@
         <a href="https://www.linkedin.com/in/emiliano-firpo-b07033158/" target="_blank" class="btn-ghost">
           LinkedIn →
         </a>
-        <a href="index.html" class="btn-ghost">
+        <a href="index.html" class="btn-ghost cta-back-btn">
           Ver portfolio
         </a>
       </div>
@@ -2239,7 +2248,7 @@
   </script>
 
   <script>
-  /* UI showcase carousel — infinite auto-scroll + drag */
+  /* UI showcase carousel — infinite auto-scroll + grab drag */
   (function() {
     var wrapper   = document.getElementById('ui-wrapper');
     var container = document.getElementById('ui-container');
@@ -2263,8 +2272,8 @@
     }
 
     function applyTx() {
-      if (tx >= loopWidth) tx -= loopWidth;
-      if (tx < 0) tx += loopWidth;
+      if (loopWidth <= 0) return;
+      tx = ((tx % loopWidth) + loopWidth) % loopWidth;
       container.style.transform = 'translateX(' + (-tx) + 'px)';
     }
 
@@ -2275,8 +2284,7 @@
     }
 
     wrapper.addEventListener('mousedown', function(e) {
-      isDragging = true; startX = e.clientX; startTx = tx;
-      velX = 0; lastX = e.clientX;
+      isDragging = true; startX = e.clientX; startTx = tx; velX = 0; lastX = e.clientX;
       wrapper.classList.add('is-dragging');
     });
     window.addEventListener('mousemove', function(e) {
@@ -2289,23 +2297,22 @@
       isDragging = false; wrapper.classList.remove('is-dragging');
     });
     wrapper.addEventListener('touchstart', function(e) {
-      isDragging = true; startX = e.touches[0].clientX; startTx = tx;
-      velX = 0; lastX = e.touches[0].clientX;
+      isDragging = true; startX = e.touches[0].clientX; startTx = tx; velX = 0; lastX = e.touches[0].clientX;
     }, { passive: true });
     wrapper.addEventListener('touchmove', function(e) {
       velX = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
       tx = startTx - (e.touches[0].clientX - startX); applyTx();
     }, { passive: true });
-    wrapper.addEventListener('touchend', function() {
-      isDragging = false;
-    });
+    wrapper.addEventListener('touchend', function() { isDragging = false; });
 
-    requestAnimationFrame(function() { measure(); tick(); });
+    window.addEventListener('resize', measure);
+    if (document.readyState === 'complete') { measure(); tick(); }
+    else { window.addEventListener('load', function() { measure(); tick(); }); }
   })();
   </script>
 
   <script>
-  /* Brand carousel — infinite auto-scroll + drag */
+  /* Brand carousel — infinite auto-scroll + grab drag */
   (function() {
     var wrapper   = document.getElementById('brand-wrapper');
     var container = document.getElementById('brand-container');
@@ -2329,8 +2336,8 @@
     }
 
     function applyTx() {
-      if (tx >= loopWidth) tx -= loopWidth;
-      if (tx < 0) tx += loopWidth;
+      if (loopWidth <= 0) return;
+      tx = ((tx % loopWidth) + loopWidth) % loopWidth;
       container.style.transform = 'translateX(' + (-tx) + 'px)';
     }
 
@@ -2341,8 +2348,7 @@
     }
 
     wrapper.addEventListener('mousedown', function(e) {
-      isDragging = true; startX = e.clientX; startTx = tx;
-      velX = 0; lastX = e.clientX;
+      isDragging = true; startX = e.clientX; startTx = tx; velX = 0; lastX = e.clientX;
       wrapper.classList.add('is-dragging');
     });
     window.addEventListener('mousemove', function(e) {
@@ -2355,8 +2361,7 @@
       isDragging = false; wrapper.classList.remove('is-dragging');
     });
     wrapper.addEventListener('touchstart', function(e) {
-      isDragging = true; startX = e.touches[0].clientX; startTx = tx;
-      velX = 0; lastX = e.touches[0].clientX;
+      isDragging = true; startX = e.touches[0].clientX; startTx = tx; velX = 0; lastX = e.touches[0].clientX;
     }, { passive: true });
     wrapper.addEventListener('touchmove', function(e) {
       velX = e.touches[0].clientX - lastX; lastX = e.touches[0].clientX;
@@ -2365,9 +2370,48 @@
     wrapper.addEventListener('touchend', function() { isDragging = false; });
 
     window.addEventListener('resize', measure);
-    requestAnimationFrame(function() { measure(); tick(); });
+    if (document.readyState === 'complete') { measure(); tick(); }
+    else { window.addEventListener('load', function() { measure(); tick(); }); }
   })();
   </script>
 
+
+<script>
+/* iOS Safari autoplay fix — IntersectionObserver fuerza .play() al entrar en viewport */
+(function() {
+  var videos = Array.from(document.querySelectorAll('video[autoplay]'));
+  if (!videos.length) return;
+
+  /* Forzar atributos necesarios en iOS */
+  videos.forEach(function(v) {
+    v.muted    = true;
+    v.playsInline = true;
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+  });
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var v = entry.target;
+        if (entry.isIntersecting) {
+          var p = v.play();
+          if (p !== undefined) p.catch(function() {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { threshold: 0.25 });
+
+    videos.forEach(function(v) { observer.observe(v); });
+  } else {
+    /* Fallback: intentar reproducir todos de una vez */
+    videos.forEach(function(v) {
+      var p = v.play();
+      if (p !== undefined) p.catch(function() {});
+    });
+  }
+})();
+</script>
 </body>
 </html>
