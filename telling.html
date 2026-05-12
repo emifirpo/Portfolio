@@ -2377,40 +2377,49 @@
 
 
 <script>
-/* iOS Safari autoplay fix — IntersectionObserver fuerza .play() al entrar en viewport */
+/* iOS Safari autoplay — fuerza atributos + observa viewport + captura clones del carousel */
 (function() {
-  var videos = Array.from(document.querySelectorAll('video[autoplay]'));
-  if (!videos.length) return;
+  var observed = new WeakSet();
 
-  /* Forzar atributos necesarios en iOS */
-  videos.forEach(function(v) {
-    v.muted    = true;
-    v.playsInline = true;
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var v = entry.target;
+      if (entry.isIntersecting) {
+        var p = v.play();
+        if (p && p.catch) p.catch(function() {});
+      } else {
+        v.pause();
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px' });
+
+  function register(v) {
+    if (observed.has(v)) return;
+    observed.add(v);
+    v.muted        = true;
+    v.loop         = true;
+    v.playsInline  = true;
     v.setAttribute('playsinline', '');
     v.setAttribute('webkit-playsinline', '');
-  });
-
-  if ('IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        var v = entry.target;
-        if (entry.isIntersecting) {
-          var p = v.play();
-          if (p !== undefined) p.catch(function() {});
-        } else {
-          v.pause();
-        }
-      });
-    }, { threshold: 0.25 });
-
-    videos.forEach(function(v) { observer.observe(v); });
-  } else {
-    /* Fallback: intentar reproducir todos de una vez */
-    videos.forEach(function(v) {
-      var p = v.play();
-      if (p !== undefined) p.catch(function() {});
-    });
+    v.setAttribute('muted', '');
+    var p = v.play();
+    if (p && p.catch) p.catch(function() {});
+    io.observe(v);
   }
+
+  document.querySelectorAll('video').forEach(register);
+
+  new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (!node || node.nodeType !== 1) return;
+        var vids = node.tagName === 'VIDEO'
+          ? [node]
+          : Array.from(node.querySelectorAll('video'));
+        vids.forEach(register);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
 })();
 </script>
 </body>
